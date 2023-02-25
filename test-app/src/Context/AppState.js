@@ -1,32 +1,31 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
+import { axiosInstance } from "../services/api";
 import AppContext from "./context";
 
 const AppState = ({ children }) => {
+  const adminField = JSON.parse(localStorage.getItem("userData"));
   const [loginShow, setLoginShow] = useState(false);
   const [registerShow, setRegisterShow] = useState(false);
   const [updateShow, setUpdateShow] = useState(false);
   const [updateKey, setUpdateKey] = useState("");
-  const admin = localStorage.getItem("user");
-  const [isAdmin , setIsAdmin] = useState(admin);
-  const [loading , setLoading] = useState(true);
-  const [x,setX] = useState(0);
+  const [isAdmin, setIsAdmin] = useState(adminField?.isAdmin);
+  const [loading, setLoading] = useState(true);
 
-
-   const [userData,setUserData] = useState([]);
-  const getUserData = () => {
-    const allData = JSON.parse(localStorage.getItem("data")) || [];
+  const [userData, setUserData] = useState([]);
+  const getUserData = async () => {
+    const data = await axiosInstance
+      .get()
+      .then()
+      .catch((e) => {
+        toast.error(e.message);
+      });
+    const allData = data?.data.data.rows;
     setUserData(allData);
     setLoading(false);
-  };  
-
-  const setDataInLocalStorage  = (allUsers = userData) =>{
-    localStorage.setItem("data",JSON.stringify(allUsers))
-    getUserData();
-  }
+  };
 
 
-    console.log(x,"context");
-  //  console.log(admin,isAdmin,"AdminDAta");
 
   return (
     <AppContext.Provider
@@ -36,7 +35,7 @@ const AppState = ({ children }) => {
         registerShow,
         setRegisterShow,
         userData,
-        setDataInLocalStorage,
+
         // setUserData,
         updateShow,
         setUpdateShow,
@@ -47,7 +46,6 @@ const AppState = ({ children }) => {
         setIsAdmin,
         loading,
         setLoading,
-        x,setX
       }}
     >
       {children}

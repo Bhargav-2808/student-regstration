@@ -2,19 +2,23 @@ import React, { useContext, useState } from "react";
 import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import appContext from "../../Context/context";
+import { axiosInstance } from "../../services/api";
 
 const UpdateModal = ({ updateKey }) => {
   const {
     userData,
     setUserData,
     setUpdateShow,
+    getUserData,
     updateShow,
-    setDataInLocalStorage,
+
+    setIsAdmin,
   } = useContext(appContext);
 
-  let prevData = userData[updateKey];
+  const filterData = userData.filter((item, i) => item.id === updateKey);
 
-  const [data, setData] = useState(prevData);
+  const [data, setData] = useState(filterData[0]);
+
   const handleChange = (e) => {
     const key = e.target.name;
     const value = e.target.value;
@@ -54,8 +58,7 @@ const UpdateModal = ({ updateKey }) => {
     }
   };
 
-  const submitData = () => {
-    console.log(data.mobile.length);
+  const submitData = async () => {
     if (
       data.mobile === "" ||
       data.add1 === "" ||
@@ -67,7 +70,6 @@ const UpdateModal = ({ updateKey }) => {
     ) {
       toast.warning("All Field are Required");
     } else if (data.mobile.length !== 10) {
-      console.log("mobile");
       toast.warning("Enter Valid Mobile");
     } else if (!isValidPwd(data.password)) {
       toast.warning("Password should be in Valid Formate..");
@@ -76,13 +78,16 @@ const UpdateModal = ({ updateKey }) => {
     } else if (data.pincode.length !== 6) {
       toast.warning("Enter Valid Pincode");
     } else {
-      //let prevData = userData[updateKey];
-      // console.log(prevData);
-      userData[updateKey] = data;
-      localStorage.setItem("data", JSON.stringify(userData));
-      // console.log(userData,"update");
-      toast.success("Data Updated Successfully");
-      setDataInLocalStorage(userData);
+      await axiosInstance
+        .put(`/edit/${updateKey}`, data)
+        .then((res) => {
+          toast.success(res.data.sucess);
+        })
+        .catch((e) => {
+          toast.error(e.response.data);
+        });
+
+      getUserData();
       setUpdateShow(false);
     }
   };

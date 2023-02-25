@@ -6,17 +6,22 @@ import Admin from "./Components/Admin";
 import Footer from "./Components/Footer";
 import Header from "./Components/Header";
 import Home from "./Components/Home";
+import Loader from "./Components/Loader";
 import Profile from "./Components/Profile";
 import { AdminProtected, WelcomeProtected } from "./Components/Protected";
 import Welcome from "./Components/Welcome";
 import appContext from "./Context/context";
+import { axiosInstance } from "./services/api";
 
 const App = () => {
   const { getUserData, loading } = useContext(appContext);
 
+
+
   useEffect(() => {
     getUserData();
   }, []);
+
 
   return (
     <>
@@ -28,18 +33,16 @@ const App = () => {
             path="/welcome"
             element={<WelcomeProtected Component={Welcome} />}
           />
-           <Route
+          <Route
             path="/profile"
             element={<WelcomeProtected Component={Profile} />}
           />
           <Route path="/admin" element={<AdminProtected Component={Admin} />} />
         </Routes>
       ) : (
-        <h1>loading...</h1>
+        <Loader/>
       )}
-      <ToastContainer 
-        autoClose={1000}
-        />
+      <ToastContainer autoClose={1000} />
       <Footer />
     </>
   );

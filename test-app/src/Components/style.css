@@ -36,7 +36,8 @@
   margin-top: 2rem;
 }
 
-tr > td ,th{
+tr > td,
+th {
   text-align: center;
   color: white !important;
 }
@@ -58,4 +59,28 @@ ul {
 .fcontrol:focus {
   box-shadow: none !important;
   outline: none !important;
+}
+
+@keyframes spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.loading-spinner {
+  width: 150px;
+  height: 150px;
+  border: 20px solid white;
+  border-top: 20px solid #1d2345;
+  border-radius: 50%;
+  animation: spinner 1.5s linear infinite;
+}
+
+.spinner-container {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  height: 350px;
 }

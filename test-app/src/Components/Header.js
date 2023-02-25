@@ -9,16 +9,16 @@ import profile from "../Images/profile.png";
 import "./style.css";
 
 const Header = () => {
-  const { setLoginShow, setRegisterShow, isAdmin, setIsAdmin } =
+  const { setLoginShow, setRegisterShow, isAdmin, setIsAdmin, setUpdateShow } =
     useContext(appContext);
   const nav = useNavigate();
   const logout = () => {
     setIsAdmin(null);
-    localStorage.removeItem("user");
+    localStorage.removeItem("userData");
     nav("/");
     toast.success("User logged out Successfully");
-  
   };
+
 
   return (
     <>
@@ -34,7 +34,7 @@ const Header = () => {
             >
               Home
             </NavLink>
-            {isAdmin === "admin" && (
+            {isAdmin && (
               <>
                 <NavLink
                   className=" ms-3"
@@ -48,19 +48,10 @@ const Header = () => {
               </>
             )}
           </Nav>
+
           <Nav className="ms-auto">
             <div className="p-2">
-              {(isAdmin === "admin" || isAdmin === null) && (
-                <Button
-                  className="nav-btn"
-                  onClick={() => {
-                    setRegisterShow(true);
-                  }}
-                >
-                  Register
-                </Button>
-              )}
-              {isAdmin === null && (
+              {(isAdmin === undefined || isAdmin === null) && (
                 <>
                   <Button
                     className="nav-btn"
@@ -73,7 +64,16 @@ const Header = () => {
                 </>
               )}
 
-              {isAdmin && (
+              <Button
+                className="nav-btn"
+                onClick={() => {
+                  isAdmin === false ? setUpdateShow(true) : setRegisterShow(true)
+                }}
+              >
+                {isAdmin === false ? "Update" : "Register"}
+              </Button>
+
+              {(isAdmin === false || isAdmin === true) && (
                 <>
                   <img
                     src={profile}

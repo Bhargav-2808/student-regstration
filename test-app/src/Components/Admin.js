@@ -1,32 +1,43 @@
 import React, { useContext, useState } from "react";
 import { Button, Container, Table } from "react-bootstrap";
-import icon from "../Images/delete.png";
+
 import appContext from "../Context/context";
 import UpdateModal from "./Modal/UpdateModal";
 import { confirmAlert } from "react-confirm-alert";
+import { axiosInstance } from "../services/api";
+import { toast } from "react-toastify";
 
 const Admin = () => {
   const {
     userData,
-    setUserData,
     setUpdateShow,
     updateShow,
-    setDataInLocalStorage,
+
+    getUserData,
   } = useContext(appContext);
   const [updateKey, setUpdateKey] = useState("");
 
-  const deleteData = (index) => {
-    const filterData = userData.filter((item, i) => i !== index);
-    localStorage.setItem("data", JSON.stringify(filterData));
-    setDataInLocalStorage(filterData);
+  const deleteData = async (id) => {
+    await axiosInstance
+      .delete(`/delete/${id}`)
+      .then((res) => {
+        toast.success(res.data.sucess);
+      })
+      .catch((e) => {
+        
+        toast.error(e.response.data.error);
+      });
+
+    getUserData();
   };
 
-  const updateData = (index) => {
-    setUpdateKey(index);
+  const updateData = (key) => {
+    setUpdateKey(key);
     setUpdateShow(true);
   };
 
-  // console.log(userData);
+
+
   return (
     <>
       <Container fluid>
@@ -84,7 +95,7 @@ const Admin = () => {
                                 <Button
                                   className="nav-btn"
                                   onClick={() => {
-                                    deleteData(index);
+                                    deleteData(item.id);
                                     onClose();
                                   }}
                                 >
@@ -105,7 +116,7 @@ const Admin = () => {
                     className="nav-btn"
                     disabled={item.email === "admin@gmail.com" ? true : false}
                     onClick={() => {
-                      updateData(index);
+                      updateData(item.id);
                     }}
                   >
                     Update
