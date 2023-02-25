@@ -3,10 +3,10 @@ import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import appContext from "../../Context/context";
+import { axiosInstance } from "../../services/api";
 
 const LoginModal = () => {
-  const { loginShow, setLoginShow, userData, setIsAdmin } =
-    useContext(appContext);
+  const { loginShow, setLoginShow, setIsAdmin } = useContext(appContext);
 
   const nav = useNavigate();
 
@@ -24,40 +24,32 @@ const LoginModal = () => {
     });
   };
 
-  const submitData = () => {
+  const submitData = async () => {
     if (!data.password && !data.email) {
       toast.warning("All Field are Required");
-    }
-    if (!isValidEmail(data.email)) {
+    } else if (!isValidEmail(data.email)) {
       toast.warning("Enter Valid Email");
-    } else if (
-      userData.find((e) => e.email === data.email) &&
-      userData.find((e) => e.password === data.password) &&
-      data.email === "admin@gmail.com" &&
-      data.password === "admin"
-    ) {
-      toast.success("Admin Logged In Successfully");
-      const logData = userData.find((e) => e.email === data.email);
-      setIsAdmin("admin");
-
-      localStorage.setItem("userData", JSON.stringify(logData));
-      localStorage.setItem("user", "admin");
-      nav("/admin");
-      setLoginShow(false);
-    } else if (
-      userData.find((e) => e.email === data.email) &&
-      userData.find((e) => e.password === data.password)
-    ) {
-      toast.success("User Logged In Successfully");
-
-      const logData = userData.find((e) => e.email === data.email);
-      setIsAdmin("notAdmin");
-      localStorage.setItem("userData", JSON.stringify(logData));
-      localStorage.setItem("user", "notAdmin");
-      nav("/welcome");
-      setLoginShow(false);
     } else {
-      toast.error("Invalid credentials! ");
+      const result = await axiosInstance
+        .post("/login", data)
+        .then()
+        .catch((e) => {
+          toast.error(e.message);
+        });
+      setLoginShow(false);
+
+      if (result.data.isAdmin) {
+        toast.success("Admin Logged In Successfully");
+        localStorage.setItem("userData", JSON.stringify(result.data));
+        setIsAdmin(true);
+        nav("/admin");
+      } else {
+        toast.success("User Logged In Successfully");
+        localStorage.setItem("userData", JSON.stringify(result.data));
+
+        setIsAdmin(false);
+        nav("/welcome");
+      }
     }
   };
 
@@ -68,7 +60,6 @@ const LoginModal = () => {
       return true;
     }
   };
-  // console.log(userData);
 
   return (
     <>

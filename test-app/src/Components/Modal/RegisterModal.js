@@ -3,9 +3,11 @@ import { Button, Col, Container, Modal, Row, Form } from "react-bootstrap";
 import {} from "react-router-dom";
 import { toast } from "react-toastify";
 import appContext from "../../Context/context";
+import { axiosInstance } from "../../services/api";
 
 const RegisterModal = () => {
-  const { registerShow, setRegisterShow, userData } = useContext(appContext);
+  const { registerShow, setRegisterShow, userData, getUserData } =
+    useContext(appContext);
 
   const intialState = {
     fname: "",
@@ -70,9 +72,9 @@ const RegisterModal = () => {
     }
   };
 
-  useEffect(() => {}, []);
 
-  const submitData = () => {
+
+  const submitData = async () => {
     if (
       data.mobile === "" ||
       data.add1 === "" ||
@@ -88,35 +90,24 @@ const RegisterModal = () => {
       toast.warning("Enter Valid Mobile");
     } else if (!isValidEmail(data.email)) {
       toast.warning("Enter Valid Email");
-    }
-    else if (!isValidPwd(data.password)) {
+    } else if (!isValidPwd(data.password)) {
       toast.warning("Password should be in Valid Formate..");
-    }
-    else if (data.pincode.length !== 6) {
+    } else if (data.pincode.length !== 6) {
       toast.warning("Enter Valid Pincode");
     } else if (data.password !== data.Cpassword) {
       toast.warning("Both password should be same! ");
     } else {
-      if (
-        userData.find((e) => e.email.toLowerCase() === data.email.toLowerCase())
-      ) {
-        toast.error("User already Exists!");
-      } else {
-        let ndata = {};
-        ndata["fname"] = data.fname;
-        ndata["lname"] = data.lname;
-        ndata["email"] = data.email;
-        ndata["mobile"] = data.mobile;
-        ndata["add1"] = data.add1;
-        ndata["add2"] = data.add2;
-        ndata["pincode"] = data.pincode;
-        ndata["password"] = data.password;
-        ndata["Cpassword"] = data.Cpassword;
-        userData.push(ndata);
-        toast.success("User Registration successfully");
-        localStorage.setItem("data", JSON.stringify(userData));
-        setRegisterShow(false);
-      }
+      await axiosInstance
+        .post("/register", data)
+        .then(() => {
+          toast.success("User Registration successfully");
+        })
+        .catch((e) => {
+          toast.error(e.message);
+        });
+        getUserData();
+
+      setRegisterShow(false);
     }
   };
 
@@ -131,6 +122,8 @@ const RegisterModal = () => {
     data.email = "";
     data.password = "";
   }
+
+
   return (
     <>
       <Modal
@@ -163,7 +156,6 @@ const RegisterModal = () => {
                     <Form.Label>Last Name</Form.Label>{" "}
                     <Form.Control
                       className="fcontrol"
-
                       type="text"
                       name="lname"
                       onChange={handleChange}
@@ -181,7 +173,6 @@ const RegisterModal = () => {
                       onChange={handleChange}
                       value={data.email}
                       className="fcontrol"
-
                       name="email"
                       placeholder="xyz@gmail.com"
                     />
@@ -194,7 +185,6 @@ const RegisterModal = () => {
                     <Form.Control
                       type="number"
                       className="fcontrol"
-
                       value={data.mobile}
                       name="mobile"
                       onChange={handleChange}
@@ -210,7 +200,6 @@ const RegisterModal = () => {
                     <Form.Label>Address Line 1</Form.Label>{" "}
                     <Form.Control
                       className="fcontrol"
-
                       type="text"
                       name="add1"
                       value={data.add1}
@@ -227,7 +216,6 @@ const RegisterModal = () => {
                     <Form.Control
                       type="text"
                       className="fcontrol"
-                      
                       name="add2"
                       value={data.add2}
                       onChange={handleChange}
