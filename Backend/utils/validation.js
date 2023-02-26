@@ -18,7 +18,7 @@ const isValidPwd = (password) => {
 const validation = (body) => {
   const { fname, lname, mobile, email, add1, pincode, password, Cpassword } =
     body;
-  console.log(body);
+  // console.log(body);
 
   if (
     !fname ||

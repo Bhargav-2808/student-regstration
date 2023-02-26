@@ -5,7 +5,6 @@ dotenv.config();
 
 const protect = async (req, res, next) => {
   let token;
-  console.log(req.headers.authorization);
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
@@ -13,8 +12,13 @@ const protect = async (req, res, next) => {
     token = req.headers.authorization.split(" ")[1];
     try {
       const decode = jwt.verify(token, process.env.SECRET_KEY);
-
-      req.user = await User.findByPk(decode.id);
+      // console.log(decode.id,"decode");
+      const userExist = await User.findOne({ where: { id: decode.id } });
+      // console.log(userExist,"user");
+      if (userExist) {
+        req.user = userExist;
+      }
+      // console.log(req.user,"auth");
       next();
     } catch (error) {
       res.status(401);

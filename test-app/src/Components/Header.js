@@ -7,10 +7,12 @@ import LoginModal from "./Modal/LoginModal";
 import RegisterModal from "./Modal/RegisterModal";
 import profile from "../Images/profile.png";
 import "./style.css";
+import UpdateModal from "./Modal/UpdateModal";
 
 const Header = () => {
-  const { setLoginShow, setRegisterShow, isAdmin, setIsAdmin, setUpdateShow } =
+  const { setLoginShow, setRegisterShow, isAdmin, setIsAdmin, setUpdateShow,updateShow } =
     useContext(appContext);
+  const data  = JSON.parse(localStorage.getItem("userData"));
   const nav = useNavigate();
   const logout = () => {
     setIsAdmin(null);
@@ -94,6 +96,8 @@ const Header = () => {
       </Navbar>
       <LoginModal />
       <RegisterModal />
+      {updateShow && <UpdateModal updateKey={data?.id} />}
+
     </>
   );
 };

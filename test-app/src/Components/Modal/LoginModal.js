@@ -38,7 +38,7 @@ const LoginModal = () => {
         });
       setLoginShow(false);
 
-      if (result.data.isAdmin) {
+      if (result?.data?.isAdmin) {
         toast.success("Admin Logged In Successfully");
         localStorage.setItem("userData", JSON.stringify(result.data));
         setIsAdmin(true);

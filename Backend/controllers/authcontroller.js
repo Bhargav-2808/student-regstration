@@ -20,7 +20,6 @@ const registerController = async (req, res) => {
       if (userExist) {
         res.status(400).json({ error: "User already exists" });
       } else {
-        console.log("called");
 
         const encrypted = generatePassword(password);
         try {
@@ -41,7 +40,6 @@ const registerController = async (req, res) => {
       }
     } catch (error) {
       res.status(500).json(error.message);
-      console.log(error.message);
     }
   }
 };

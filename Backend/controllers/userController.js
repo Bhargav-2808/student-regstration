@@ -1,14 +1,9 @@
 import User from "../modals/userSchema.js";
+import { generatePassword } from "../utils/helper.js";
 import validation from "../utils/validation.js";
 
 const getUserContorller = async (req, res) => {
-  // try {
-  //   const data = await User.findAll();
-  //   res.status(201).json(data);
-  // } catch (error) {
-  //   res.status(500).json(error.message);
-  // }
-  console.log(req.query);
+
 
   const pageNumber = parseInt(req.query.page);
   const sizeNumber = parseInt(req.query.size);
@@ -23,13 +18,11 @@ const getUserContorller = async (req, res) => {
     size = sizeNumber;
   }
 
-  console.log(page, size);
   try {
     const data = await User.findAndCountAll({
       limit: size,
       offset: page * size,
     });
-    console.log(data);
     res.status(201).json({
       data,
     });
@@ -40,21 +33,40 @@ const getUserContorller = async (req, res) => {
 };
 
 const editUserController = async (req, res) => {
-
+  const { fname, lname, mobile, email, add1, add2, pincode, password } =
+    req.body;
   let message = validation(req.body);
+
+  console.log(req.user?.dataValues?.id, "edit");
   if (message.length != 0) {
-    console.log(message);
     res.status(401).json(message);
   } else {
     try {
-      const user = await User.update(req.body, {
-        where: {
-          id: req.params.id,
-        },
-      });
+      if (req.user?.dataValues?.id === parseInt(req.params.id)) {
+        const encrypted = generatePassword(password);
+        const user = await User.update(
+          {
+            fname,
+            lname,
+            mobile,
+            email,
+            add1,
+            add2,
+            pincode,
+            password: encrypted,
+          },
+          {
+            where: {
+              id: req.params.id,
+            },
+          }
+        );
 
-      if (user) {
-        res.status(201).json({ sucess: "User Updated Successfully" });
+        if (user) {
+          res.status(201).json({ sucess: "User Updated Successfully" });
+        }
+      } else {
+        res.status(401).json({ error: "User can not edit diffrent user" });
       }
     } catch (error) {
       res.status(500).json({ error: error.message });
@@ -72,7 +84,6 @@ const deleteUserController = async (req, res) => {
       res.status(201).json({ sucess: "User Deleted Successfully" });
     }
   } catch (error) {
-    
     res.status(500).json({ error: error.message });
   }
 };
