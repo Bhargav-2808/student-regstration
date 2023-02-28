@@ -1,23 +1,34 @@
-import React, { useContext, useState } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import appContext from "../../Context/context";
 import { axiosInstance } from "../../services/api";
 
 const UpdateModal = ({ updateKey }) => {
+  const user = JSON.parse(localStorage.getItem("userData"));
+  // console.log(updateKey);
   const {
     userData,
     setUserData,
     setUpdateShow,
     getUserData,
     updateShow,
+    profileData,
 
-    setIsAdmin,
+    getProfile,
   } = useContext(appContext);
 
-  const filterData = userData.filter((item, i) => item.id === updateKey);
+  let filterData;
+  
+  if (userData?.length === 0) {
+    filterData = profileData;
+  } else {
+    filterData = userData.filter((item) => item.id === parseInt(updateKey))[0];
+  }
 
-  const [data, setData] = useState(filterData[0]);
+  const [data, setData] = useState(filterData);
+  const formData = new FormData();
 
   const handleChange = (e) => {
     const key = e.target.name;
@@ -41,6 +52,13 @@ const UpdateModal = ({ updateKey }) => {
           };
         });
       }
+    } else if (key === "pic") {
+      setData((prevState) => {
+        return {
+          ...prevState,
+          [key]: e.target.files[0],
+        };
+      });
     } else {
       setData((prevState) => {
         return {
@@ -51,19 +69,10 @@ const UpdateModal = ({ updateKey }) => {
     }
   };
 
-  const isValidPwd = (password) => {
-    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\w!@#$%^&*?~()-]{8,}$/;
-    if (re.test(password)) {
-      return true;
-    }
-  };
-
-  const submitData = async () => {
+  const submitData = () => {
     if (
       data.mobile === "" ||
       data.add1 === "" ||
-      data.Cpassword === "" ||
-      data.password === "" ||
       data.pincode === "" ||
       data.fname === "" ||
       data.lname === ""
@@ -71,26 +80,49 @@ const UpdateModal = ({ updateKey }) => {
       toast.warning("All Field are Required");
     } else if (data.mobile.length !== 10) {
       toast.warning("Enter Valid Mobile");
-    } else if (!isValidPwd(data.password)) {
-      toast.warning("Password should be in Valid Formate..");
-    } else if (data.password !== data.Cpassword) {
-      toast.warning("Both password should be same! ");
-    } else if (data.pincode.length !== 6) {
+    }
+    // else if (
+    //   data.pic &&
+    //   (data.pic.type.split("/")[1] !== "jpg" ||
+    //     data.pic.type.split("/")[1] !== "jpeg" ||
+    //     data.pic.type.split("/")[1] !== "png")
+    // ) {
+    //   toast.warning("enter file in valid formate");
+    // }
+    else if (data.pincode.length !== 6) {
       toast.warning("Enter Valid Pincode");
     } else {
-      await axiosInstance
-        .put(`/edit/${updateKey}`, data)
+      formData.append("fname", data.fname);
+      formData.append("lname", data.lname);
+      formData.append("mobile", data.mobile);
+      formData.append("email", data.email);
+      formData.append("add1", data.add1);
+      formData.append("add2", data.add2);
+      formData.append("pincode", data.pincode);
+      formData.append("pic", data.pic);
+      const token = user?.token;
+      axios
+        .put(`http://localhost:5555/user/edit/${updateKey}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((res) => {
           toast.success(res.data.sucess);
         })
         .catch((e) => {
           toast.error(e.response.data);
         });
-
+      getProfile();
       getUserData();
       setUpdateShow(false);
     }
   };
+
+  useEffect(() => {
+    getProfile();
+  }, []);
 
   return (
     <>
@@ -194,6 +226,20 @@ const UpdateModal = ({ updateKey }) => {
               </Row>
               <Row>
                 <Col>
+                  <Form.Group className="mb-3">
+                    {" "}
+                    <Form.Label>Profile Pic</Form.Label>{" "}
+                    <Form.Control
+                      type="file"
+                      className="fcontrol"
+                      name="pic"
+                      onChange={handleChange}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
                   {" "}
                   <Form.Group className="mb-3">
                     {" "}
@@ -203,34 +249,6 @@ const UpdateModal = ({ updateKey }) => {
                       value={data?.pincode}
                       className="fcontrol"
                       name="pincode"
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Form.Group className="mb-3">
-                    {" "}
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                      type="password"
-                      name="password"
-                      className="fcontrol"
-                      value={data?.password}
-                      onChange={handleChange}
-                    />
-                  </Form.Group>
-                </Col>
-                <Col>
-                  <Form.Group className="mb-3">
-                    {" "}
-                    <Form.Label>Confirm Password</Form.Label>{" "}
-                    <Form.Control
-                      type="password"
-                      name="Cpassword"
-                      className="fcontrol"
-                      value={data?.Cpassword}
                       onChange={handleChange}
                     />
                   </Form.Group>

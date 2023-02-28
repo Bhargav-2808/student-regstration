@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { Button, Col, Container, Modal, Row, Form } from "react-bootstrap";
 import {} from "react-router-dom";
@@ -19,10 +20,11 @@ const RegisterModal = () => {
     pincode: "",
     password: "",
     Cpassword: "",
+    pic: "",
   };
 
   const [data, setData] = useState(intialState);
-
+  const formData = new FormData();
   const handleChange = (e) => {
     let value =
       e.target.name === "email" ? e.target.value.toLowerCase() : e.target.value;
@@ -34,7 +36,7 @@ const RegisterModal = () => {
         setData((prevState) => {
           return {
             ...prevState,
-            [e.target.name]: e.target.value,
+            [key]: e.target.value,
           };
         });
       }
@@ -43,10 +45,17 @@ const RegisterModal = () => {
         setData((prevState) => {
           return {
             ...prevState,
-            [e.target.name]: e.target.value,
+            [key]: e.target.value,
           };
         });
       }
+    } else if (key === "pic") {
+      setData((prevState) => {
+        return {
+          ...prevState,
+          [key]: e.target.files[0],
+        };
+      });
     } else {
       setData((prevState) => {
         return {
@@ -72,9 +81,7 @@ const RegisterModal = () => {
     }
   };
 
-
-
-  const submitData = async () => {
+  const submitData = () => {
     if (
       data.mobile === "" ||
       data.add1 === "" ||
@@ -94,18 +101,42 @@ const RegisterModal = () => {
       toast.warning("Password should be in Valid Formate..");
     } else if (data.pincode.length !== 6) {
       toast.warning("Enter Valid Pincode");
-    } else if (data.password !== data.Cpassword) {
+    }
+    // else if (
+    //   data.pic &&
+    //   (data.pic.type.split("/")[1] !== "jpg" ||
+    //     data.pic.type.split("/")[1] !== "jpeg" ||
+    //     data.pic.type.split("/")[1] !== "png")
+    // ) {
+    //   toast.warning("enter file in valid formate");
+    // }
+    else if (data.password !== data.Cpassword) {
       toast.warning("Both password should be same! ");
     } else {
-      await axiosInstance
-        .post("/register", data)
-        .then(() => {
-          toast.success("User Registration successfully");
+      formData.append("fname", data.fname);
+      formData.append("lname", data.lname);
+      formData.append("mobile", data.mobile);
+      formData.append("email", data.email);
+      formData.append("add1", data.add1);
+      formData.append("add2", data.add2);
+      formData.append("pincode", data.pincode);
+      formData.append("password", data.password);
+      formData.append("pic", data?.pic ?? null);
+
+      axios
+        .post(`http://localhost:5555/user/register`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          toast.success("user registered successfully");
         })
         .catch((e) => {
-          toast.error(e.message);
+          // console.log(e.response.data.error);
+          toast.error(e.response.data.error);
         });
-        getUserData();
+      getUserData();
 
       setRegisterShow(false);
     }
@@ -122,7 +153,6 @@ const RegisterModal = () => {
     data.email = "";
     data.password = "";
   }
-
 
   return (
     <>
@@ -218,6 +248,20 @@ const RegisterModal = () => {
                       className="fcontrol"
                       name="add2"
                       value={data.add2}
+                      onChange={handleChange}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Form.Group className="mb-3">
+                    {" "}
+                    <Form.Label>Profile Pic</Form.Label>{" "}
+                    <Form.Control
+                      type="file"
+                      className="fcontrol"
+                      name="pic"
                       onChange={handleChange}
                     />
                   </Form.Group>
