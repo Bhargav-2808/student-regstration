@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Button, Container, Nav, Navbar, NavLink } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -8,11 +8,22 @@ import RegisterModal from "./Modal/RegisterModal";
 import profile from "../Images/profile.png";
 import "./style.css";
 import UpdateModal from "./Modal/UpdateModal";
+import PasswordModal from "./Modal/PasswordModal";
 
 const Header = () => {
-  const { setLoginShow, setRegisterShow, isAdmin, setIsAdmin, setUpdateShow,updateShow } =
-    useContext(appContext);
-  const data  = JSON.parse(localStorage.getItem("userData"));
+  const {
+    setLoginShow,
+    setRegisterShow,
+    isAdmin,
+    setIsAdmin,
+    setUpdateShow,
+    updateShow,
+    passwordShow,
+    setPasswordShow,
+    profileData,
+    getProfile
+  } = useContext(appContext);
+
   const nav = useNavigate();
   const logout = () => {
     setIsAdmin(null);
@@ -21,7 +32,9 @@ const Header = () => {
     toast.success("User logged out Successfully");
   };
 
-
+  useEffect(()=>{
+    getProfile();
+  },[])
   return (
     <>
       <Navbar style={{ backgroundColor: "#1d2345" }} variant="dark">
@@ -69,7 +82,9 @@ const Header = () => {
               <Button
                 className="nav-btn"
                 onClick={() => {
-                  isAdmin === false ? setUpdateShow(true) : setRegisterShow(true)
+                  isAdmin === false
+                    ? setUpdateShow(true)
+                    : setRegisterShow(true);
                 }}
               >
                 {isAdmin === false ? "Update" : "Register"}
@@ -77,6 +92,14 @@ const Header = () => {
 
               {(isAdmin === false || isAdmin === true) && (
                 <>
+                  <Button
+                    className="nav-btn"
+                    onClick={() => {
+                      setPasswordShow(true);
+                    }}
+                  >
+                    Update Password
+                  </Button>
                   <img
                     src={profile}
                     alt="profile"
@@ -96,8 +119,8 @@ const Header = () => {
       </Navbar>
       <LoginModal />
       <RegisterModal />
-      {updateShow && <UpdateModal updateKey={data?.id} />}
-
+      {updateShow && <UpdateModal updateKey={profileData?.id} />}
+      {passwordShow && <PasswordModal id={profileData?.id} />}
     </>
   );
 };

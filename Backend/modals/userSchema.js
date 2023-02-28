@@ -1,6 +1,5 @@
 import user from "../db/db.js";
-import {  DataTypes } from "sequelize";
-
+import { DataTypes } from "sequelize";
 
 const User = user.define("user", {
   fname: {
@@ -34,17 +33,23 @@ const User = user.define("user", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  isAdmin:{
-    type:DataTypes.BOOLEAN,
-    defaultValue:false
-  }
+  isAdmin: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  pic: {
+    type: DataTypes.STRING,
+    allowNull:true
+  },
 });
 
-User.sync().then(()=>{
+User.sync()
+  .then(() => {
     console.log("User Table created!");
-}).catch((e)=>{
+  })
+  .catch((e) => {
     console.log(e);
-});
+  });
 
 export default User;
 

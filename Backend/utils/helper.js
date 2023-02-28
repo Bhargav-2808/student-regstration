@@ -8,7 +8,7 @@ const generatePassword = (password) => {
 };
 
 const comparePassword = (password, newPassword) => {
-  // console.log(bcrypt.compareSync(newPassword, password));
+  console.log(bcrypt.compareSync(newPassword, password));
   return bcrypt.compareSync(newPassword, password);
 };
 

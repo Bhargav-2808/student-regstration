@@ -5,14 +5,13 @@ import { toast } from "react-toastify";
 import appContext from "../../Context/context";
 import { axiosInstance } from "../../services/api";
 
-const LoginModal = () => {
-  const { loginShow, setLoginShow, setIsAdmin } = useContext(appContext);
-
-  const nav = useNavigate();
+const PasswordModal = ({ id }) => {
+  const { setIsAdmin, getUserData, passwordShow, setPasswordShow } =
+    useContext(appContext);
 
   const intialState = {
-    email: "",
     password: "",
+    cPassword: "",
   };
 
   const [data, setData] = useState(intialState);
@@ -23,57 +22,34 @@ const LoginModal = () => {
       [e.target.name]: e.target.value,
     });
   };
-
-  const submitData = async () => {
-    if (!data.password && !data.email) {
+  console.log(id);
+  const submitData = () => {
+    if (!data.password && !data.cPassword) {
       toast.warning("All Field are Required");
-    } else if (!isValidEmail(data.email)) {
-      toast.warning("Enter Valid Email");
     } else {
-      const result = await axiosInstance
-        .post("/login", data)
-        .then()
+      axiosInstance
+        .put(`/edit/${id}`, data)
+        .then((res) => {
+          toast.success("Password updated successfully");
+        })
         .catch((e) => {
           toast.error(e.message);
         });
-      setLoginShow(false);
-
-      if (result) {
-        if (result?.data?.isAdmin) {
-          console.log("called");
-          toast.success("Admin Logged In Successfully");
-          localStorage.setItem("userData", JSON.stringify(result.data));
-          setIsAdmin(true);
-          nav("/admin");
-        } else {
-          toast.success("User Logged In Successfully");
-          localStorage.setItem("userData", JSON.stringify(result.data));
-
-          setIsAdmin(false);
-          nav("/welcome");
-        }
-      } 
-    }
-  };
-
-  const isValidEmail = (email) => {
-    const re =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (re.test(String(email).toLowerCase())) {
-      return true;
+      setPasswordShow(false);
+      getUserData();
     }
   };
 
   return (
     <>
       <Modal
-        show={loginShow}
+        show={passwordShow}
         onHide={() => {
-          setLoginShow(false);
+          setPasswordShow(false);
         }}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Login</Modal.Title>
+          <Modal.Title>Change Password</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Container>
@@ -81,23 +57,22 @@ const LoginModal = () => {
               <Row>
                 <Col>
                   <Form.Group className="mb-3">
-                    <Form.Label>Email address</Form.Label>{" "}
+                    <Form.Label>Password</Form.Label>{" "}
                     <Form.Control
-                      type="email"
+                      type="password"
                       onChange={handleChange}
-                      name="email"
+                      name="password"
                       className="fcontrol"
-                      placeholder="name@example.com"
                       required
                     />
                   </Form.Group>
 
                   <Form.Group className="mb-3">
                     {" "}
-                    <Form.Label>Password</Form.Label>{" "}
+                    <Form.Label>Confirm Password</Form.Label>{" "}
                     <Form.Control
                       type="password"
-                      name="password"
+                      name="cPassword"
                       className="fcontrol"
                       onChange={handleChange}
                       required
@@ -110,7 +85,7 @@ const LoginModal = () => {
         </Modal.Body>
         <Modal.Footer>
           <Button className="nav-btn" onClick={submitData}>
-            Login
+            Update
           </Button>
         </Modal.Footer>
       </Modal>
@@ -118,4 +93,4 @@ const LoginModal = () => {
   );
 };
 
-export default LoginModal;
+export default PasswordModal;
