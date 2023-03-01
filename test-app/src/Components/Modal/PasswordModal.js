@@ -48,9 +48,10 @@ const PasswordModal = ({ id }) => {
           setPasswordShow(false);
         }}
       >
-        <Modal.Header closeButton>
+              <Modal.Header style={{justifyContent:"center"}}>
           <Modal.Title>Change Password</Modal.Title>
         </Modal.Header>
+    
         <Modal.Body>
           <Container>
             <Form onSubmit={(e) => e.preventDefault()}>
@@ -83,11 +84,15 @@ const PasswordModal = ({ id }) => {
             </Form>
           </Container>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer style={{backgroundColor:"#becce9"}}>
           <Button className="nav-btn" onClick={submitData}>
             Update
           </Button>
+          <Button className="cancel-btn" onClick={()=>{setPasswordShow(false)}}>
+            Cancel
+          </Button>
         </Modal.Footer>
+    
       </Modal>
     </>
   );

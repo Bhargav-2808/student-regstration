@@ -132,7 +132,7 @@ const UpdateModal = ({ updateKey }) => {
           setUpdateShow(false);
         }}
       >
-        <Modal.Header closeButton>
+    <Modal.Header style={{justifyContent:"center"}}>
           <Modal.Title>Update</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -257,9 +257,12 @@ const UpdateModal = ({ updateKey }) => {
             </Form>
           </Container>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer style={{backgroundColor:"#becce9"}}>
           <Button className="nav-btn" onClick={submitData}>
             Update
+          </Button>
+          <Button className="cancel-btn" onClick={()=>{setUpdateShow(false)}}>
+            Cancel
           </Button>
         </Modal.Footer>
       </Modal>

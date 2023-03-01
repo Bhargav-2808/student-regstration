@@ -52,7 +52,7 @@ const LoginModal = () => {
           setIsAdmin(false);
           nav("/welcome");
         }
-      } 
+      }
     }
   };
 
@@ -72,7 +72,8 @@ const LoginModal = () => {
           setLoginShow(false);
         }}
       >
-        <Modal.Header closeButton>
+        {" "}
+        <Modal.Header style={{justifyContent:"center"}}>
           <Modal.Title>Login</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -108,9 +109,12 @@ const LoginModal = () => {
             </Form>
           </Container>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer  style={{backgroundColor:"#becce9"}}>
           <Button className="nav-btn" onClick={submitData}>
             Login
+          </Button>
+          <Button className="cancel-btn" onClick={()=>{setLoginShow(false)}}>
+            Cancel
           </Button>
         </Modal.Footer>
       </Modal>
