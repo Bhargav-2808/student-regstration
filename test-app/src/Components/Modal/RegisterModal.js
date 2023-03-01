@@ -162,8 +162,8 @@ const RegisterModal = () => {
           setRegisterShow(false);
         }}
       >
-        <Modal.Header closeButton>
-          <Modal.Title>Register</Modal.Title>
+        <Modal.Header style={{justifyContent:"center"}}>
+          <Modal.Title>Sign Up</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Container>
@@ -314,9 +314,12 @@ const RegisterModal = () => {
             </form>
           </Container>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer style={{backgroundColor:"#becce9"}}>
           <Button className="nav-btn" onClick={submitData}>
-            Register
+            Sign Up
+          </Button>
+          <Button className="cancel-btn" onClick={()=>{setRegisterShow(false)}}>
+            Cancel
           </Button>
         </Modal.Footer>
       </Modal>

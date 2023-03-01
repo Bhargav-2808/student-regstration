@@ -4,7 +4,7 @@ import {
   registerController,
   upload,
 } from "../controllers/authcontroller.js";
-import { getUserContorller,editUserController,deleteUserController, profileContorller } from "../controllers/userController.js";
+import { getUserContorller,editUserController,deleteUserController, profileContorller } from "../controllers/customerController.js";
 import protect from "../utils/authMiddleware.js";
 
 const router = express.Router();

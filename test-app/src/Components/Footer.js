@@ -6,8 +6,8 @@ const Footer = () => {
     <>
       <div className="footer">
         <ul>
-          <li> About Us </li>
-          <li> Contact Us </li>
+          <li> ABOUT US </li>
+          <li> CONTACT US </li>
           <li> FAQ </li>
         </ul>
         

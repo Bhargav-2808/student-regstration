@@ -8,6 +8,8 @@ import { confirmAlert } from "react-confirm-alert";
 import { axiosInstance } from "../services/api";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
+import DeleteIcon from '@mui/icons-material/Delete';
+import { IconButton } from "@mui/material";
 
 const Admin = () => {
   const {
@@ -145,7 +147,7 @@ const Admin = () => {
         {!loading ? (
           <>
             {" "}
-            <Table
+            {/* <Table
               striped
               bordered
               hover
@@ -179,8 +181,8 @@ const Admin = () => {
                     <td>{item.add2}</td>
                     <td>{item.pincode}</td>
                     <td>
-                      <Button
-                        className="nav-btn"
+                      <IconButton
+                        style={{backgroundColor:"white"}}
                         disabled={
                           item.email === "admin@gmail.com" ? true : false
                         }
@@ -193,7 +195,7 @@ const Admin = () => {
                                     <h1>Are you sure?</h1>
                                     <p>You want to delete this Data?</p>
                                     <Button
-                                      className="nav-btn"
+                                      className="cancel-btn me-2"
                                       onClick={onClose}
                                     >
                                       Cancel
@@ -214,8 +216,8 @@ const Admin = () => {
                           });
                         }}
                       >
-                        Delete
-                      </Button>
+                        <DeleteIcon fontSize="2.5rem"/>
+                      </IconButton>
                     </td>
                     <td>
                       <Button
@@ -234,7 +236,10 @@ const Admin = () => {
                 ))}
               </tbody>
               {updateShow && <UpdateModal updateKey={updateKey} />}
-            </Table>
+            </Table> */}
+
+
+            
           </>
         ) : (
           <Loader />

@@ -1,30 +1,65 @@
 .nav-btn {
-  background-color: #1d2345;
-  color: white;
-  border: 1px solid white;
-  margin-left: 5px;
-}
-
-.nav-btn:hover {
-  background-color: #1d2345;
-  color: white;
-  border: 1px solid white;
+  border: none;
+  opacity: 0.9;
+  outline: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 8px 20px;
+  border-radius: 50px;
+  letter-spacing: 0.2px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  transition: transform 0.5s ease;
+  /* background-color: #0075bb; */
+  background: linear-gradient(135deg, #7f6de3 0%, #11aaf1 100%);
 }
 
 .nav-btn:disabled {
-  background-color: #1d2345;
-  color: white;
-  border: 1px solid white;
+  border: none;
+  opacity: 0.9;
+  outline: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 8px 20px;
+  border-radius: 50px;
+  letter-spacing: 0.2px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  transition: transform 0.5s ease;
+  /* background-color: #0075bb; */
+  background: linear-gradient(135deg, #7f6de3 0%, #11aaf1 100%);
 }
 
+
+.cancel-btn{
+  border: none;
+  opacity: 0.9;
+  outline: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 8px 20px;
+  border-radius: 50px;
+  letter-spacing: 0.2px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  transition: transform 0.5s ease;
+  /* background-color: #0075bb; */
+  background: linear-gradient(135deg, #df1616 0%, #f1c608 100%);
+}
 .footer > ul > li {
   list-style-type: none;
-  color: white;
+  
   padding: 5px;
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #1c2244;
 }
 
 .footer {
-  background-color: #1d2345;
+  background-color: #becce9;
   position: fixed;
   left: 0;
   bottom: 0;
@@ -59,6 +94,13 @@ ul {
 .fcontrol:focus {
   box-shadow: none !important;
   outline: none !important;
+  background-color: #e8f0fe !important;
+}
+
+.fcontrol{
+  border:none;
+  border-bottom: 2px solid #4e65e8;
+  background-color: #e8f0fe !important;
 }
 
 @keyframes spinner {
@@ -86,10 +128,22 @@ ul {
 }
 
 .search {
-  height: 40px;
-  width: 250px;
+  height: 2.8rem;
+  width: 22rem;
   color: rgb(33, 33, 33);
   margin-top: 1rem;
-  border-top: 2px solid #1d2345;
-  border-radius: 5px;
+  border: none;
+  border-radius: 30px;
+  background-color: #e8f0fe;
+  padding: 15px;
 }
+.search:focus{
+  border:none;
+}
+
+.navs {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #1c2244;
+}
+

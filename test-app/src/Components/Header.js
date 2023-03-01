@@ -9,6 +9,8 @@ import profile from "../Images/profile.png";
 import "./style.css";
 import UpdateModal from "./Modal/UpdateModal";
 import PasswordModal from "./Modal/PasswordModal";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { IconButton } from "@mui/material";
 
 const Header = () => {
   const {
@@ -21,7 +23,7 @@ const Header = () => {
     passwordShow,
     setPasswordShow,
     profileData,
-    getProfile
+    getProfile,
   } = useContext(appContext);
 
   const nav = useNavigate();
@@ -32,17 +34,16 @@ const Header = () => {
     toast.success("User logged out Successfully");
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getProfile();
-  },[])
+  }, []);
   return (
     <>
-      <Navbar style={{ backgroundColor: "#1d2345" }} variant="dark">
+      <Navbar style={{ backgroundColor: "#becce9" }}>
         <Container>
           <Nav>
             <NavLink
-              className="ms-3"
-              style={{ color: "white" }}
+              className="ms-3 navs"
               onClick={() => {
                 nav("/");
               }}
@@ -52,8 +53,7 @@ const Header = () => {
             {isAdmin && (
               <>
                 <NavLink
-                  className=" ms-3"
-                  style={{ color: "white" }}
+                  className=" ms-3 navs"
                   onClick={() => {
                     nav("/admin");
                   }}
@@ -80,7 +80,7 @@ const Header = () => {
               )}
 
               <Button
-                className="nav-btn"
+                className="nav-btn ms-2"
                 onClick={() => {
                   isAdmin === false
                     ? setUpdateShow(true)
@@ -100,14 +100,14 @@ const Header = () => {
                   >
                     Update Password
                   </Button>
-                  <img
-                    src={profile}
-                    alt="profile"
-                    className="ms-5"
+                  <IconButton
                     onClick={() => {
                       nav("/profile");
                     }}
-                  />
+                  >
+                    <AccountCircleIcon style={{fontSize:"2rem"}} />
+                  </IconButton>
+
                   <Button className="nav-btn ms-5" onClick={logout}>
                     Logout{" "}
                   </Button>
