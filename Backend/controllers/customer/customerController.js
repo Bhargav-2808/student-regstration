@@ -1,9 +1,9 @@
 import { Op } from "sequelize";
-import User from "../modals/userSchema.js";
-import { generatePassword } from "../utils/helper.js";
-import { validation, isValidPwd } from "../utils/validation.js";
+import { generatePassword } from "../../utils/helper.js";
+import { isValidPwd, customerValidation } from "../../utils/validation.js";
 import { unlink } from "fs";
-const getUserContorller = async (req, res) => {
+import Customer from "../../modals/customerSchema.js";
+const getCustomerContorller = async (req, res) => {
   let data;
   const pageNumber = parseInt(req.query.page);
   const sizeNumber = parseInt(req.query.size);
@@ -21,7 +21,7 @@ const getUserContorller = async (req, res) => {
 
   try {
     if (query) {
-      data = await User.findAndCountAll({
+      data = await Customer.findAndCountAll({
         where: {
           [Op.or]: [
             {
@@ -68,7 +68,7 @@ const getUserContorller = async (req, res) => {
         offset: page * size,
       });
     } else {
-      data = await User.findAndCountAll({
+      data = await Customer.findAndCountAll({
         limit: size,
         offset: page * size,
       });
@@ -85,8 +85,12 @@ const getUserContorller = async (req, res) => {
 };
 
 const profileContorller = async (req, res) => {
+  if (req.customer?.dataValues?.id === parseInt(req.params.id)) {
+    res.status(401).json({ error: "Unauthorized Customer!" });
+  }
+
   try {
-    const data = await User.findByPk(req.params.id);
+    const data = await Customer.findByPk(req.params.id);
     if (data) {
       res.status(201).json(data);
     }
@@ -135,7 +139,7 @@ const profileContorller = async (req, res) => {
 //   }
 // };
 
-const editUserController = async (req, res) => {
+const editCustomerContorller = async (req, res) => {
   let user, file, message;
   // console.log(req);
   const {
@@ -156,11 +160,11 @@ const editUserController = async (req, res) => {
     } else if (password === cPassword) {
       try {
         if (
-          req.user?.dataValues?.id === parseInt(req.params.id) ||
-          req.user.dataValues.isAdmin
+          req.customer?.dataValues?.id === parseInt(req.params.id) ||
+          req.customer.dataValues.isAdmin
         ) {
           const encrypted = generatePassword(password);
-          user = await User.update(
+          user = await Customer.update(
             {
               password: encrypted,
             },
@@ -186,7 +190,7 @@ const editUserController = async (req, res) => {
       res.status(400).json({ error: "Both password should be same" });
     }
   } else {
-    message = validation(req.body);
+    message = customerValidation(req.body);
     if (req.file) {
       file = req.file.path.replace(/\\/g, "/");
     } else {
@@ -202,7 +206,7 @@ const editUserController = async (req, res) => {
           req.user?.dataValues?.id === parseInt(req.params.id) ||
           req.user.dataValues.isAdmin
         ) {
-          user = await User.update(
+          user = await Customer.update(
             {
               fname,
               lname,
@@ -235,9 +239,9 @@ const editUserController = async (req, res) => {
   //
   // console.log(req.user?.dataValues?.id, "edit");
 };
-const deleteUserController = async (req, res) => {
+const deleteCustomerContorller = async (req, res) => {
   try {
-    const newUser = await User.findByPk(req.params.id);
+    const newUser = await Customer.findByPk(req.params.id);
 
     if (newUser.dataValues.pic) {
       unlink(newUser.dataValues.pic, (err) => {
@@ -246,7 +250,7 @@ const deleteUserController = async (req, res) => {
       });
     }
 
-    const user = await User.destroy({
+    const user = await Customer.destroy({
       where: {
         id: req.params.id,
       },
@@ -258,8 +262,8 @@ const deleteUserController = async (req, res) => {
   }
 };
 export {
-  getUserContorller,
-  editUserController,
-  deleteUserController,
+  getCustomerContorller,
+  editCustomerContorller,
+  deleteCustomerContorller,
   profileContorller,
 };

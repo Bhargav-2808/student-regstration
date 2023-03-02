@@ -15,9 +15,8 @@ const isValidPwd = (password) => {
   }
 };
 
-const validation = (body) => {
+const customerValidation = (body) => {
   const { fname, lname, mobile, email, add1, pincode } = body;
-  console.log(isNaN(mobile));
 
   if (!fname || !lname || !mobile || !email || !add1 || !pincode) {
     message = "All Field are Required";
@@ -33,4 +32,20 @@ const validation = (body) => {
   return message;
 };
 
-export { validation, isValidPwd };
+const userValidation = (body) => {
+
+  console.log(body);
+  const { fname, lname, mobile, email } = body;
+
+  if (!fname || !lname || !mobile || !email) {
+    message = "All Field are Required";
+  } else if (mobile.length !== 10 || isNaN(mobile)) {
+    message = "Enter Valid Mobile";
+  } else if (!isValidEmail(email)) {
+    message = "Enter Valid Email";
+  } else {
+    message = "";
+  }
+  return message;
+};
+export { customerValidation, isValidPwd, userValidation };

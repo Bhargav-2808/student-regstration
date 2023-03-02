@@ -124,7 +124,7 @@ const RegisterModal = () => {
       formData.append("pic", data?.pic ?? null);
 
       axios
-        .post(`http://localhost:5555/user/register`, formData, {
+        .post(`http://localhost:5555/customer/register`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
