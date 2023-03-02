@@ -5,7 +5,7 @@ const user = JSON.parse(localStorage.getItem("userData"));
 
 
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:5555/user",
+  baseURL: "http://localhost:5555/customer",
 });
 
 axiosInstance.interceptors.request.use(

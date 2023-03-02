@@ -1,31 +1,13 @@
-import multer from "multer";
-import User from "../modals/userSchema.js";
-import path from "path";
+import Customer from "../../modals/customerSchema.js";
+
 import {
   comparePassword,
   generatePassword,
   genrateToken,
-} from "../utils/helper.js";
-import { validation } from "../utils/validation.js";
+} from "../../utils/helper.js";
+import { customerValidation } from "../../utils/validation.js";
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(
-      null,
-      // "D:\Lucent\Practice\Backend\React_form\test-app\public\Images"
-      path.join(path.resolve(), "../test-app/public/Images")
-    );
-  },
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split("/")[1];
-    cb(null, `img-${Date.now()}.${ext}`);
-  },
-});
 
-export const upload = multer({
-  storage: storage,
-  limits: { fieldSize: 10 * 1024 * 1024 },
-});
 
 const registerController = async (req, res) => {
   let file;
@@ -39,19 +21,19 @@ const registerController = async (req, res) => {
   }
   // console.log(pic,"pic");
 
-  let message = validation(req.body);
+  let message = customerValidation(req.body);
   if (message.length != 0) {
     res.status(400).json({ error: message });
   } else {
     try {
-      const userExist = await User.findOne({ where: { email } });
+      const userExist = await Customer.findOne({ where: { email } });
 
       if (userExist) {
-        res.status(400).json({ error: "User already exists" });
+        res.status(400).json({ error: "Customer already exists" });
       } else {
         const encrypted = generatePassword(password);
         try {
-          const user = await User.create({
+          const user = await Customer.create({
             fname,
             lname,
             mobile,
@@ -79,7 +61,7 @@ const loginController = async (req, res) => {
   if (!email || !password) {
     res.status(400).json({ error: "All Fields area required" });
   } else {
-    const user = await User.findOne({ where: { email: email } });
+    const user = await Customer.findOne({ where: { email: email } });
 
     const data = user?.dataValues;
     console.log(data);

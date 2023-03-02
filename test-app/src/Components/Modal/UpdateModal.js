@@ -102,7 +102,7 @@ const UpdateModal = ({ updateKey }) => {
       formData.append("pic", data.pic);
       const token = user?.token;
       axios
-        .put(`http://localhost:5555/user/edit/${updateKey}`, formData, {
+        .put(`http://localhost:5555/customer/edit/${updateKey}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
