@@ -33,8 +33,6 @@ const customerValidation = (body) => {
 };
 
 const userValidation = (body) => {
-
-  console.log(body);
   const { fname, lname, mobile, email } = body;
 
   if (!fname || !lname || !mobile || !email) {

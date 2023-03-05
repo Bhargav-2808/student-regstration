@@ -1,4 +1,4 @@
-import User from "../../modals/userSchema.js";
+import { Permission, Rules, User } from "../../modals/userSchema.js";
 import {
   comparePassword,
   generatePassword,
@@ -29,26 +29,8 @@ const userLoginController = async (req, res) => {
 };
 
 const userRegisterController = async (req, res) => {
-  console.log(req.body);
-  let file;
-  const {
-    fname,
-    lname,
-    mobile,
-    email,
-    password,
-    adminRead,
-    adminWrite,
-    productRead,
-    productWrite,
-    isSuperAdmin,
-  } = req.body;
-
-  if (req.file) {
-    file = req.file.path.replace(/\\/g, "/");
-  } else {
-    file = null;
-  }
+  const { fname, lname, mobile, email, password, rulesData } =
+    req.body;
 
   let message = userValidation(req.body);
   if (message.length != 0) {
@@ -67,17 +49,32 @@ const userRegisterController = async (req, res) => {
             lname,
             mobile,
             email,
-            adminRead,
-            adminWrite,
-            productRead,
-            productWrite,
-            isSuperAdmin,
             password: encrypted,
-            pic: file,
           });
-          if (user) {
-            res.status(201).json(user);
+
+          if (rulesData.length !== 0) {
+            rulesData?.map(async (rule) => {
+              try {
+                let ruleData = await Rules.findOne({
+                  where: {
+                    ruleName: rule.rule,
+                  },
+                });
+
+                let permits = await Permission.create({
+                  ruleId: ruleData.dataValues.id,
+                  userId: user.dataValues.id,
+                  permission: rule.permit,
+                });
+              } catch (error) {
+                res.status(500).json({ error });
+              }
+            });
           }
+
+          res.status(201).json({
+            user,
+          });
         } catch (error) {
           res.status(500).json(error.message);
         }

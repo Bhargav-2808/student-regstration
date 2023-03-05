@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import "./db/db.js";
 import "./modals/customerSchema.js";
 import "./modals/userSchema.js";
+import "./modals/productSchema.js"
 import customerRoute from "./routes/customerRoute.js";
 import userRoute from "./routes/userRoute.js";
 import productRoute from "./routes/productRoute.js";
