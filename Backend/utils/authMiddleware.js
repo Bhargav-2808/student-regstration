@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import Customer from "../modals/customerSchema.js";
 import dotenv from "dotenv";
-import User from "../modals/userSchema.js";
+import { User, Rules, Permission } from "../modals/userSchema.js";
 dotenv.config();
 
 const protect = async (req, res, next) => {
@@ -14,12 +14,21 @@ const protect = async (req, res, next) => {
     console.log(token);
     try {
       const decode = jwt.verify(token, process.env.SECRET_KEY);
-      // console.log(decode.id,"decode");
       const customerExist = await Customer.findOne({
         where: { id: decode.id },
       });
-      const userExist = await User.findOne({ where: { id: decode.id } });
-      // console.log(userExist,"user");
+
+      const userExist = await User.findOne({
+        where: { id: decode.id },
+      });
+
+      const perExist = await Permission.findAll(
+        {
+          where: { userId: decode.id },
+        },
+        { include: [{ model: User }, { model: Rules }] }
+      );
+
       if (customerExist) {
         req.customer = customerExist;
       }
@@ -27,8 +36,10 @@ const protect = async (req, res, next) => {
       if (userExist) {
         req.user = userExist;
       }
-      console.log(userExist);
-      // console.log(req.user,"auth");
+
+      if (perExist) {
+        req.permssion = perExist;
+      }
       next();
     } catch (error) {
       res.status(401);

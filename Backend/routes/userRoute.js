@@ -18,8 +18,8 @@ router.get("/", protect, getUserContorller);
 router.get("/profile/:id", protect, userProfileController);
 
 router.post("/login", userLoginController);
-router.post("/register", upload.single("pic"), userRegisterController);
-router.put("/edit/:id", upload.single("pic"), protect, editUserContorller);
+router.post("/register", userRegisterController);
+router.put("/edit/:id", protect, editUserContorller);
 router.delete("/delete/:id", protect, deleteUserController);
 
 export default router;

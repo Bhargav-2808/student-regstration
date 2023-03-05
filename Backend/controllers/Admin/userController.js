@@ -1,4 +1,4 @@
-import User from "../../modals/userSchema.js";
+import { Permission, Rules, User } from "../../modals/userSchema.js";
 import { userValidation } from "../../utils/validation.js";
 
 const getUserContorller = async (req, res) => {
@@ -16,61 +16,64 @@ const getUserContorller = async (req, res) => {
     size = sizeNumber;
   }
 
+  const authPemission = req.permssion.filter((item) => {
+    return parseInt(item.dataValues.ruleId) === 1;
+  });
   if (
-    req.user.dataValues.adminRead === false &&
-    req.user.dataValues.adminWrite === false &&
+    authPemission[0].dataValues.permission !== false &&
+    authPemission[0].dataValues.permission !== true &&
     !req.user.dataValues.isSuperAdmin
   ) {
     res.status(401).json({ error: "Unauthorized User!" });
-  }
-
-  try {
-    if (query) {
-      data = await User.findAndCountAll({
-        where: {
-          [Op.or]: [
-            {
-              fname: {
-                [Op.like]: `%${query}%`,
+  } else {
+    try {
+      if (query) {
+        data = await User.findAndCountAll({
+          where: {
+            [Op.or]: [
+              {
+                fname: {
+                  [Op.like]: `%${query}%`,
+                },
               },
-            },
 
-            {
-              lname: {
-                [Op.like]: `%${query}%`,
+              {
+                lname: {
+                  [Op.like]: `%${query}%`,
+                },
               },
-            },
 
-            {
-              mobile: {
-                [Op.like]: `%${query}%`,
+              {
+                mobile: {
+                  [Op.like]: `%${query}%`,
+                },
               },
-            },
 
-            {
-              email: {
-                [Op.like]: `%${query}%`,
+              {
+                email: {
+                  [Op.like]: `%${query}%`,
+                },
               },
-            },
-          ],
-        },
-        limit: size,
-        offset: page * size,
+            ],
+          },
+          limit: size,
+          offset: page * size,
+        });
+      } else {
+        data = await User.findAndCountAll({
+          limit: size,
+          offset: page * size,
+        });
+      }
+
+      res.status(201).json({
+        data,
+        totalPage: Math.ceil(data.count / size),
       });
-    } else {
-      data = await User.findAndCountAll({
-        limit: size,
-        offset: page * size,
-      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json(error.message);
     }
-
-    res.status(201).json({
-      data,
-      totalPage: Math.ceil(data.count / size),
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json(error.message);
   }
 };
 
@@ -90,25 +93,20 @@ const userProfileController = async (req, res) => {
 };
 
 const editUserContorller = async (req, res) => {
-  let user, file, message;
+  let user, message;
   // console.log(req);
-  const {
-    fname,
-    lname,
-    mobile,
-    email,
-    password,
-    cPassword,
-    adminRead,
-    adminWrite,
-    productRead,
-    productWrite,
-    isSuperAdmin,
-  } = req.body;
+  const { fname, lname, mobile, email, password, cPassword, rulesData } =
+    req.body;
+
+  const authPemission = req.permssion.filter((item) => {
+    return parseInt(item.dataValues.ruleId) === 1;
+  });
 
   if (
-    !req.user.dataValues.isSuperAdmin &&
-    req.user.dataValues.adminWrite === false
+    (!req.user.dataValues.isSuperAdmin &&
+      authPemission[0].dataValues.permission !== true) ||
+    parseInt(req.params.id) ===
+      parseInt(req.user.dataValues.id || parseInt(req.params.id) === 1)
   ) {
     res.status(401).json({ error: "Unauthorized User!" });
   } else if (password && cPassword) {
@@ -141,14 +139,9 @@ const editUserContorller = async (req, res) => {
     }
   } else {
     message = userValidation(req.body);
-    if (req.file) {
-      file = req.file.path.replace(/\\/g, "/");
-    } else {
-      file = null;
-    }
 
     if (message.length != 0) {
-      res.status(501).json(message);
+      res.status(400).json(message);
     } else {
       try {
         user = await User.update(
@@ -157,12 +150,6 @@ const editUserContorller = async (req, res) => {
             lname,
             mobile,
             email,
-            adminRead,
-            adminWrite,
-            productRead,
-            productWrite,
-            isSuperAdmin,
-            pic: file,
           },
           {
             where: {
@@ -171,9 +158,48 @@ const editUserContorller = async (req, res) => {
           }
         );
 
-        if (user) {
-          res.status(201).json({ sucess: "User Updated Successfully" });
+        if (rulesData.length !== 0) {
+          rulesData?.map(async (rule) => {
+            let ruleData = await Rules.findOne({
+              where: {
+                ruleName: rule.rule,
+              },
+            });
+
+            let permissionCheck = await Permission.findOne({
+              where: {
+                ruleId: ruleData.dataValues.id,
+                userId: req.params.id,
+              },
+            });
+
+            try {
+              if (permissionCheck) {
+                await Permission.update(
+                  {
+                    permission: rule.permit,
+                  },
+                  {
+                    where: {
+                      userId: req.params.id,
+                      ruleId: ruleData.dataValues.id,
+                    },
+                  }
+                );
+              } else {
+                await Permission.create({
+                  ruleId: ruleData.dataValues.id,
+                  userId: req.params.id,
+                  permission: rule.permit,
+                });
+              }
+            } catch (error) {
+              res.status(500).json({ error: error.message });
+            }
+          });
+          // console.log("called user");
         }
+        res.status(201).json({ sucess: "User Updated Successfully" });
       } catch (error) {
         res.status(500).json({ error: error.message });
       }
@@ -182,29 +208,32 @@ const editUserContorller = async (req, res) => {
 };
 
 const deleteUserController = async (req, res) => {
+  const authPemission = req.permssion.filter((item) => {
+    return parseInt(item.dataValues.ruleId) === 1;
+  });
+
   if (
-    !req.user.dataValues.isSuperAdmin &&
-    req.user.dataValues.adminWrite === false
+    (!req.user.dataValues.isSuperAdmin &&
+      authPemission[0].dataValues.permission !== true) ||
+    parseInt(req.params.id) ===
+      parseInt(req.user.dataValues.id || parseInt(req.params.id) === 1)
   ) {
     res.status(401).json({ error: "Unauthorized User!" });
   } else {
     try {
-      const newUser = await User.findByPk(req.params.id);
+      await Permission.destroy({
+        where: {
+          userId: req.params.id,
+        },
+      });
 
-      if (newUser.dataValues.pic) {
-        unlink(newUser.dataValues.pic, (err) => {
-          console.log(err);
-          if (err) throw err;
-        });
-      }
-
-      const user = await User.destroy({
+      const result = await User.destroy({
         where: {
           id: req.params.id,
         },
       });
 
-      if (user) res.status(201).json({ sucess: "User Deleted Successfully" });
+      if (result) res.status(201).json({ sucess: "User Deleted Successfully" });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

@@ -22,31 +22,29 @@ const User = user.define("user", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  adminRead: {
+  isSuperAdmin: {
     type: DataTypes.BOOLEAN,
-    defaultValue:false
+    defaultValue: false,
   },
-  adminWrite: {
-    type: DataTypes.BOOLEAN,
-    defaultValue:false
-  },
-  productRead: {
-    type: DataTypes.BOOLEAN,
-    defaultValue:false
-  },
-  productWrite: {
-    type: DataTypes.BOOLEAN,
-    defaultValue:false
-  },
-  isSuperAdmin:{
-    type:DataTypes.BOOLEAN,
-    defaultValue:false
-  },
-  pic: {
-    type: DataTypes.STRING,
-    allowNull:true
-  }
+
 });
+
+const Rules = user.define("rules", {
+  ruleName: {
+    type: DataTypes.STRING,
+    defaultValue: false,
+  },
+});
+
+const Permission = user.define("permission", {
+  permission: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+  },
+});
+
+User.hasMany(Permission);
+Rules.hasMany(Permission);
 
 User.sync()
   .then(() => {
@@ -56,4 +54,20 @@ User.sync()
     console.log(e);
   });
 
-export default User;
+Rules.sync()
+  .then(() => {
+    console.log("Rules Table created!");
+  })
+  .catch((e) => {
+    console.log(e);
+  });
+
+Permission.sync()
+  .then(() => {
+    console.log("Permission Table created!");
+  })
+  .catch((e) => {
+    console.log(e);
+  });
+
+export { User,Rules,Permission };
