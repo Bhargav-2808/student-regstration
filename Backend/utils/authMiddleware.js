@@ -29,18 +29,19 @@ const protect = async (req, res, next) => {
         },
         { include: [{ model: User }, { model: Rules }] }
       );
-
+      
       if (customerExist) {
         req.customer = customerExist;
       }
-      console.log(req.customer);
+  
       if (userExist) {
         req.user = userExist;
       }
 
       if (perExist) {
-        req.permssion = perExist;
+        req.permission = perExist;
       }
+      console.log(req.permission,"auth");
       next();
     } catch (error) {
       res.status(401);
