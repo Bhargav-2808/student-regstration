@@ -16,7 +16,7 @@ const getUserContorller = async (req, res) => {
     size = sizeNumber;
   }
 
-  const authPemission = req.permssion.filter((item) => {
+  const authPemission = req.permission.filter((item) => {
     return parseInt(item.dataValues.ruleId) === 1;
   });
   if (
@@ -82,7 +82,8 @@ const userProfileController = async (req, res) => {
     res.status(401).json({ error: "Unauthorized User!" });
   } else {
     try {
-      const data = await User.findByPk(req.params.id);
+      const data = await User.findByPk(req.params.id, { include: Permission });
+      console.log(data);
       if (data) {
         res.status(201).json(data);
       }
@@ -98,8 +99,8 @@ const editUserContorller = async (req, res) => {
   const { fname, lname, mobile, email, password, cPassword, rulesData } =
     req.body;
 
-  const authPemission = req.permssion.filter((item) => {
-    return parseInt(item.dataValues.ruleId) === 1;
+  const authPemission = req.permission.filter((item) => {
+    return parseInt(item.dataValues.ruleId) === 2;
   });
 
   if (
@@ -160,20 +161,19 @@ const editUserContorller = async (req, res) => {
 
         if (rulesData.length !== 0) {
           rulesData?.map(async (rule) => {
-            let ruleData = await Rules.findOne({
-              where: {
-                ruleName: rule.rule,
-              },
-            });
-
-            let permissionCheck = await Permission.findOne({
-              where: {
-                ruleId: ruleData.dataValues.id,
-                userId: req.params.id,
-              },
-            });
-
             try {
+              let ruleData = await Rules.findOne({
+                where: {
+                  ruleName: rule.rule,
+                },
+              });
+
+              let permissionCheck = await Permission.findOne({
+                where: {
+                  ruleId: ruleData.dataValues.id,
+                  userId: req.params.id,
+                },
+              });
               if (permissionCheck) {
                 await Permission.update(
                   {
@@ -208,7 +208,7 @@ const editUserContorller = async (req, res) => {
 };
 
 const deleteUserController = async (req, res) => {
-  const authPemission = req.permssion.filter((item) => {
+  const authPemission = req.permission.filter((item) => {
     return parseInt(item.dataValues.ruleId) === 1;
   });
 
@@ -233,7 +233,7 @@ const deleteUserController = async (req, res) => {
         },
       });
 
-      if (result) res.status(201).json({ sucess: "User Deleted Successfully" });
+      if (result) res.status(200).json({ sucess: "User Deleted Successfully" });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

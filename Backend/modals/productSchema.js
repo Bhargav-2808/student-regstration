@@ -6,14 +6,30 @@ const Product = user.define("product", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  productImage: {
+  category: {
     type: DataTypes.STRING,
+  },
+  description: {
+    type: DataTypes.TEXT,
     allowNull: true,
+  },
+  defaultVariantId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
   },
 });
 
 const Variants = user.define("variants", {
-  variantName: {
+  option: {
+    type: DataTypes.STRING,
+  },
+  optionValue: {
+    type: DataTypes.STRING,
+  },
+  quantity: {
+    type: DataTypes.INTEGER,
+  },
+  sku: {
     type: DataTypes.STRING,
     allowNull: false,
   },
