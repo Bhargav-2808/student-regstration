@@ -3,13 +3,14 @@ import { Button, Col, Container, Row, Table } from "react-bootstrap";
 import left from "../Images/left.png";
 import right from "../Images/right.png";
 import appContext from "../Context/context";
-import UpdateModal from "./Modal/UpdateModal";
+import UpdateModal from "./Form/UpdateModal";
 import { confirmAlert } from "react-confirm-alert";
 import { axiosInstance } from "../services/api";
 import { toast } from "react-toastify";
 import Loader from "./Loader";
-import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
+import SideBar from "./SideBar";
 
 const Admin = () => {
   const {
@@ -79,8 +80,9 @@ const Admin = () => {
   return (
     <>
       <Container fluid>
+        <SideBar/>
         <Row>
-          <Col>
+          {/* <Col>
             <input
               type="text"
               value={filterText}
@@ -90,7 +92,7 @@ const Admin = () => {
               }}
               className="search"
             />
-          </Col>
+          </Col> */}
           {/* <Col
             style={{
               flexDirection: "column",
@@ -105,7 +107,7 @@ const Admin = () => {
         </Row>
 
         <Row>
-          <Col className="d-flex justify-content-between mt-4">
+          {/* <Col className="d-flex justify-content-between mt-4">
             <button
               disabled={page === 0}
               onClick={() => {
@@ -142,7 +144,7 @@ const Admin = () => {
             >
               <img src={right} height="30" width="30" alt="icon" />
             </button>
-          </Col>
+          </Col> */}
         </Row>
         {!loading ? (
           <>
@@ -237,9 +239,6 @@ const Admin = () => {
               </tbody>
               {updateShow && <UpdateModal updateKey={updateKey} />}
             </Table> */}
-
-
-            
           </>
         ) : (
           <Loader />

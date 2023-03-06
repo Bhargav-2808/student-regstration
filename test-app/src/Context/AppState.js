@@ -28,9 +28,9 @@ const AppState = ({ children }) => {
     setLoading(false);
   };
 
-  // console.log(profileData);
   const getProfile = async () => {
     const data = await axiosInstance.get(`/profile/${profile.id}`);
+
     setProfileData(data?.data);
   };
   return (

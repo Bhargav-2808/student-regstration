@@ -7,14 +7,14 @@ import { axiosInstance } from "../services/api";
 const Profile = () => {
   const { getProfile, profileData } = useContext(appContext);
 
-  console.log(profileData);
+ 
 
   useEffect(() => {
     getProfile();
   }, []);
 
   const imageName = profileData?.pic?.split("Images/")[1];
-  console.log(imageName);
+
 
   return (
     <>
