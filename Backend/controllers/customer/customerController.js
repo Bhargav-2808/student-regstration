@@ -85,7 +85,8 @@ const getCustomerContorller = async (req, res) => {
 };
 
 const profileContorller = async (req, res) => {
-  if (req.customer?.dataValues?.id === parseInt(req.params.id)) {
+
+  if (req.customer?.dataValues?.id !== parseInt(req.params.id)) {
     res.status(401).json({ error: "Unauthorized Customer!" });
   }
 

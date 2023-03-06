@@ -1,8 +1,5 @@
-
 import axios from "axios";
 const user = JSON.parse(localStorage.getItem("userData"));
-
-
 
 export const axiosInstance = axios.create({
   baseURL: "http://localhost:5555/customer",

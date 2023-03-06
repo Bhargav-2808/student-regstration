@@ -14,6 +14,7 @@ const protect = async (req, res, next) => {
     console.log(token);
     try {
       const decode = jwt.verify(token, process.env.SECRET_KEY);
+
       const customerExist = await Customer.findOne({
         where: { id: decode.id },
       });
@@ -32,7 +33,7 @@ const protect = async (req, res, next) => {
       if (customerExist) {
         req.customer = customerExist;
       }
-
+      console.log(req.customer);
       if (userExist) {
         req.user = userExist;
       }

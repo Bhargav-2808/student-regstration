@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import appContext from "../../Context/context";
 import { axiosInstance } from "../../services/api";
+import CommonModal from "../Modal/CommonModal";
 
 const LoginModal = () => {
   const { loginShow, setLoginShow, setIsAdmin } = useContext(appContext);
@@ -66,58 +67,46 @@ const LoginModal = () => {
 
   return (
     <>
-      <Modal
+      <CommonModal
         show={loginShow}
-        onHide={() => {
-          setLoginShow(false);
+        setShow={(val) => {
+          setLoginShow(val);
         }}
+        submitData={submitData}
+        headerTital="Login"
       >
-        {" "}
-        <Modal.Header style={{justifyContent:"center"}}>
-          <Modal.Title>Login</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Container>
-            <Form onSubmit={(e) => e.preventDefault()}>
-              <Row>
-                <Col>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Email address</Form.Label>{" "}
-                    <Form.Control
-                      type="email"
-                      onChange={handleChange}
-                      name="email"
-                      className="fcontrol"
-                      placeholder="name@example.com"
-                      required
-                    />
-                  </Form.Group>
+        <Container>
+          <Form onSubmit={(e) => e.preventDefault()}>
+            <Row>
+              <Col>
+                <Form.Group className="mb-3">
+                  <Form.Label>Email address</Form.Label>{" "}
+                  <Form.Control
+                    type="email"
+                    onChange={handleChange}
+                    name="email"
+                    className="fcontrol"
+                    placeholder="name@example.com"
+                    required
+                  />
+                </Form.Group>
 
-                  <Form.Group className="mb-3">
-                    {" "}
-                    <Form.Label>Password</Form.Label>{" "}
-                    <Form.Control
-                      type="password"
-                      name="password"
-                      className="fcontrol"
-                      onChange={handleChange}
-                      required
-                    />
-                  </Form.Group>
-                </Col>
-              </Row>
-            </Form>
-          </Container>
-        </Modal.Body>
-        <Modal.Footer  style={{backgroundColor:"#becce9"}}>
-          <Button className="nav-btn" onClick={submitData}>
-            Login
-          </Button>
-          <Button className="cancel-btn" onClick={()=>{setLoginShow(false)}}>
-            Cancel
-          </Button>
-        </Modal.Footer>
-      </Modal>
+                <Form.Group className="mb-3">
+                  {" "}
+                  <Form.Label>Password</Form.Label>{" "}
+                  <Form.Control
+                    type="password"
+                    name="password"
+                    className="fcontrol"
+                    onChange={handleChange}
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+          </Form>
+        </Container>
+      </CommonModal>
     </>
   );
 };

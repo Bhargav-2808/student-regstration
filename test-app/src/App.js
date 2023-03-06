@@ -13,8 +13,12 @@ import Welcome from "./Components/Welcome";
 import appContext from "./Context/context";
 
 const App = () => {
-  const { getUserData } = useContext(appContext);
+  const { getUserData,getProfile } = useContext(appContext);
 
+  // useEffect(()=>{
+  //   getUserData();
+  //   getProfile();
+  // },[])
   return (
     <>
       <Header />

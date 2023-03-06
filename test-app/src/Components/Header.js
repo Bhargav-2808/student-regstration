@@ -3,12 +3,12 @@ import { Button, Container, Nav, Navbar, NavLink } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import appContext from "../Context/context";
-import LoginModal from "./Modal/LoginModal";
-import RegisterModal from "./Modal/RegisterModal";
+import LoginModal from "./Form/LoginModal";
+import RegisterModal from "./Form/RegisterModal";
 import profile from "../Images/profile.png";
 import "./style.css";
-import UpdateModal from "./Modal/UpdateModal";
-import PasswordModal from "./Modal/PasswordModal";
+import UpdateModal from "./Form/UpdateModal";
+import PasswordModal from "./Form/PasswordModal";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { IconButton } from "@mui/material";
 
@@ -105,7 +105,7 @@ const Header = () => {
                       nav("/profile");
                     }}
                   >
-                    <AccountCircleIcon style={{fontSize:"2rem"}} />
+                    <AccountCircleIcon style={{ fontSize: "2rem" }} />
                   </IconButton>
 
                   <Button className="nav-btn ms-5" onClick={logout}>
