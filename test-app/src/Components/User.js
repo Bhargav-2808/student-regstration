@@ -1,25 +1,18 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import { IconButton } from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Col, Container, Row, Table } from "react-bootstrap";
-import left from "../Images/left.png";
-import right from "../Images/right.png";
-import appContext from "../Context/context";
-import UpdateModal from "./Form/UpdateModal";
 import { confirmAlert } from "react-confirm-alert";
-import { axiosInstance } from "../services/api";
 import { toast } from "react-toastify";
+import appContext from "../Context/context";
+import { axiosInstance } from "../services/api";
+import UpdateModal from "./Form/UpdateModal";
 import Loader from "./Loader";
 import DeleteIcon from "@mui/icons-material/Delete";
-import {
-  IconButton,
-  Pagination,
-  Stack,
-  TablePagination,
-  Typography,
-} from "@mui/material";
-import SideBar from "./SideBar";
+import SideDrawer from "./SideDrawer";
+import UserForm from "./Form/UserForm";
 import axios from "axios";
 
-const Admin = () => {
+const User = () => {
   const {
     userData,
     setUpdateShow,
@@ -30,23 +23,19 @@ const Admin = () => {
     setRegisterShow,
     totalPage,
     setPasswordShow,
+    openDrawer,
+    setOpenDrawer,
+    filterUserPermission,
   } = useContext(appContext);
   const [updateKey, setUpdateKey] = useState("");
   const [filterText, setFilterText] = useState("");
   const [size, setSize] = useState(4);
-  const adminField = JSON.parse(localStorage.getItem("userData"));
+  // const [] = useState({});
   const [page, setPage] = useState(0);
-
-  const config = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${adminField?.token}`,
-  };
 
   const deleteData = async (id) => {
     await axios
-      .delete(`http://localhost:5555/customer/delete/${id}`, {
-        headers: config,
-      })
+      .delete(`http://localhost:5555/customer/delete/${id}`)
       .then((res) => {
         toast.success(res.data.sucess);
       })
@@ -112,6 +101,7 @@ const Admin = () => {
     }
     return rows;
   };
+
   return (
     <>
       <Container className="mt-5">
@@ -128,14 +118,17 @@ const Admin = () => {
             />
           </Col>
           <Col className="d-flex justify-content-end me-4 mt-3">
-            <Button
-              className="nav-btn "
-              onClick={() => {
-                setRegisterShow(true);
-              }}
-            >
-              Add customer
-            </Button>
+            {filterUserPermission?.permisssion === true && (
+              <Button
+                className="nav-btn "
+                onClick={() => {
+                  setOpenDrawer(true);
+                }}
+              >
+                Add User
+              </Button>
+            )}
+
             <Button
               className="nav-btn ms-2"
               onClick={() => {
@@ -149,15 +142,6 @@ const Admin = () => {
 
         <Row>
           <Col className="d-flex justify-content-between mt-4">
-            {/* <button
-              disabled={page === 0}
-              onClick={() => {
-                setPage(page - 1);
-              }}
-            >
-              <img src={left} height="30" width="30" alt="icon" />
-            </button> */}
-
             <div className="d-flex me-5 align-items-center">
               <h5 className="me-3">Rows Per Page</h5>
               <form>
@@ -177,14 +161,6 @@ const Admin = () => {
             </div>
             <h5 style={{ color: "#1d2345" }}>Total Page: {totalPage}</h5>
             <h5 style={{ color: "#1d2345" }}>Total Entry: {count}</h5>
-            {/* <button
-              onClick={() => {
-                setPage(page + 1);
-              }}
-              disabled={page === totalPage - 1}
-            >
-              <img src={right} height="30" width="30" alt="icon" />
-            </button> */}
           </Col>
         </Row>
         {!loading ? (
@@ -206,8 +182,13 @@ const Admin = () => {
                   <th>Add1</th>
                   <th>Add2</th>
                   <th>Pincode</th>
-                  <th>Delete</th>
-                  <th>Update</th>
+                  {filterUserPermission?.permisssion === true && (
+                    <>
+                      {" "}
+                      <th>Delete</th>
+                      <th>Update</th>
+                    </>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -221,62 +202,71 @@ const Admin = () => {
                     <td>{item.add1}</td>
                     <td>{item.add2}</td>
                     <td>{item.pincode}</td>
-                    <td>
-                      <IconButton
-                        style={{ backgroundColor: "white" }}
-                        disabled={
-                          item.email === "admin@gmail.com" ? true : false
-                        }
-                        onClick={() => {
-                          confirmAlert({
-                            customUI: ({ onClose }) => {
-                              return (
-                                <>
-                                  <div className="confirm-box">
-                                    <h1>Are you sure?</h1>
-                                    <p>You want to delete this Data?</p>
-                                    <Button
-                                      className="cancel-btn me-2"
-                                      onClick={onClose}
-                                    >
-                                      Cancel
-                                    </Button>
-                                    <Button
-                                      className="nav-btn"
-                                      onClick={() => {
-                                        deleteData(item.id);
-                                        onClose();
-                                      }}
-                                    >
-                                      Delete
-                                    </Button>
-                                  </div>
-                                </>
-                              );
-                            },
-                          });
-                        }}
-                      >
-                        <DeleteIcon fontSize="2.5rem" />
-                      </IconButton>
-                    </td>
-                    <td>
-                      <Button
-                        className="nav-btn"
-                        disabled={
-                          item.email === "admin@gmail.com" ? true : false
-                        }
-                        onClick={() => {
-                          updateData(item.id);
-                        }}
-                      >
-                        Update
-                      </Button>
-                    </td>
+                    {filterUserPermission?.permisssion === true && (
+                      <>
+                        <td>
+                          <IconButton
+                            style={{ backgroundColor: "white" }}
+                            disabled={
+                              item.email === "admin@gmail.com" ? true : false
+                            }
+                            onClick={() => {
+                              confirmAlert({
+                                customUI: ({ onClose }) => {
+                                  return (
+                                    <>
+                                      <div className="confirm-box">
+                                        <h1>Are you sure?</h1>
+                                        <p>You want to delete this Data?</p>
+                                        <Button
+                                          className="cancel-btn me-2"
+                                          onClick={onClose}
+                                        >
+                                          Cancel
+                                        </Button>
+                                        <Button
+                                          className="nav-btn"
+                                          onClick={() => {
+                                            deleteData(item.id);
+                                            onClose();
+                                          }}
+                                        >
+                                          Delete
+                                        </Button>
+                                      </div>
+                                    </>
+                                  );
+                                },
+                              });
+                            }}
+                          >
+                            <DeleteIcon fontSize="2.5rem" />
+                          </IconButton>
+                        </td>
+                        <td>
+                          <Button
+                            className="nav-btn"
+                            disabled={
+                              item.email === "admin@gmail.com" ? true : false
+                            }
+                            onClick={() => {
+                              updateData(item.id);
+                            }}
+                          >
+                            Update
+                          </Button>
+                        </td>
+                      </>
+                    )}
                   </tr>
                 ))}
               </tbody>
               {updateShow && <UpdateModal updateKey={updateKey} />}
+              {openDrawer && (
+                <SideDrawer>
+                  <UserForm />
+                </SideDrawer>
+              )}
             </Table>
           </>
         ) : (
@@ -288,4 +278,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default User;

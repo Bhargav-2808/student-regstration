@@ -15,6 +15,29 @@
   background: linear-gradient(135deg, #7f6de3 0%, #11aaf1 100%);
 }
 
+.sidebar-btn {
+  border: none;
+  opacity: 0.9;
+  outline: none;
+  color: #fff !important;
+  cursor: pointer;
+  font-size: 1.2rem !important;
+  padding: 8px 20px !important;
+  border-radius: 2px;
+  letter-spacing: 0.2px;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px,
+    rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+  transition: transform 0.5s ease;
+  /* background-color: #0075bb; */
+  margin-top: 10px !important;
+
+  background: linear-gradient(135deg, #7f6de3 0%, #11aaf1 100%);
+}
+
+.css-4t3x6l-MuiPaper-root-MuiDrawer-paper {
+  background-color: #becce9 !important;
+}
+
 .nav-btn:disabled {
   border: none;
   opacity: 0.9;
@@ -32,8 +55,7 @@
   background: linear-gradient(135deg, #7f6de3 0%, #11aaf1 100%);
 }
 
-
-.cancel-btn{
+.cancel-btn {
   border: none;
   opacity: 0.9;
   outline: none;
@@ -51,7 +73,7 @@
 }
 .footer > ul > li {
   list-style-type: none;
-  
+
   padding: 5px;
   font-size: 1.4rem;
   font-weight: 500;
@@ -97,8 +119,8 @@ ul {
   background-color: #e8f0fe !important;
 }
 
-.fcontrol{
-  border:none;
+.fcontrol {
+  border: none;
   border-bottom: 2px solid #4e65e8;
   background-color: #e8f0fe !important;
 }
@@ -137,8 +159,8 @@ ul {
   background-color: #e8f0fe;
   padding: 15px;
 }
-.search:focus{
-  border:none;
+.search:focus {
+  border: none;
 }
 
 .navs {
@@ -147,3 +169,46 @@ ul {
   color: #1c2244;
 }
 
+.profile {
+  height: 2.5rem;
+  background: linear-gradient(135deg, #7f6de3 0%, #11aaf1 100%);
+  width: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  
+}
+
+.profile p {
+  margin: 0;
+  font-size: large;
+  font-weight: 500;
+  color: white;
+}
+
+.customer-table > thead > tr > th{
+  background-color:  #11aaf1;
+  font-size: large;
+  font-weight: 500;
+  color: white;
+}
+
+
+.customer-table > tbody > tr {
+  background-color:  #e8f0fe;
+
+}
+
+.customer-table > tbody > tr > td {
+  font-size: large;
+  font-weight: 400;
+  color: #1c2244 !important;
+}
+
+
+
+.css-1160xiw-MuiPaper-root-MuiDrawer-paper{
+  width: 70% !important;;
+}

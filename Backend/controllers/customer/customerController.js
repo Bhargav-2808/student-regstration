@@ -85,18 +85,22 @@ const getCustomerContorller = async (req, res) => {
 };
 
 const profileContorller = async (req, res) => {
+  console.log(req?.customer,"customer 88");
 
-  if (req.customer?.dataValues?.id !== parseInt(req.params.id)) {
+  console.log(req?.customer?.dataValues?.id,"customer 88");
+  console.log(req.params.id,"params 89");
+  if (req?.customer?.dataValues?.id !== parseInt(req?.params?.id)) {
+    console.log("called");
     res.status(401).json({ error: "Unauthorized Customer!" });
-  }
-
-  try {
-    const data = await Customer.findByPk(req.params.id);
-    if (data) {
-      res.status(201).json(data);
+  } else {
+    try {
+      const data = await Customer.findByPk(req.params.id);
+      if (data) {
+        res.status(201).json(data);
+      }
+    } catch (error) {
+      res.status(500).json(error.message);
     }
-  } catch (error) {
-    res.status(500).json(error.message);
   }
 };
 

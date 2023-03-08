@@ -57,19 +57,20 @@ const registerController = async (req, res) => {
 
 const loginController = async (req, res) => {
   const { email, password } = req.body;
-
+  console.log(req.body);
   if (!email || !password) {
-    res.status(400).json({ error: "All Fields area required" });
+    res.status(400).json({ error: "All Fields are required" });
   } else {
     const user = await Customer.findOne({ where: { email: email } });
 
     const data = user?.dataValues;
     console.log(data);
+    console.log(user?.dataValues?.id,"idlogin");
     if (user && comparePassword(data.password, password)) {
       res.json({
-        id: data.id,
+        id: user.dataValues.id,
         fullname: data.fname + " " + data.lname,
-        isAdmin: data.isAdmin,
+        isAdmin: false,
         email: data.email,
         token: genrateToken(data.id),
       });

@@ -116,11 +116,7 @@ const RegisterModal = () => {
       formData.append("pic", data?.pic ?? null);
 
       axios
-        .post(`http://localhost:5555/customer/register`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .post(`http://localhost:5555/customer/register`, formData,)
         .then((res) => {
           toast.success("user registered successfully");
         })

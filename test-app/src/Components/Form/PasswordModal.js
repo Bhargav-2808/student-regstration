@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useContext, useState } from "react";
 import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +10,8 @@ import CommonModal from "../Modal/CommonModal";
 const PasswordModal = ({ id }) => {
   const { setIsAdmin, getUserData, passwordShow, setPasswordShow } =
     useContext(appContext);
+  const adminField = JSON.parse(localStorage.getItem("userData"));
+
 
   const intialState = {
     password: "",
@@ -24,12 +27,18 @@ const PasswordModal = ({ id }) => {
     });
   };
   console.log(id);
+  const config = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${adminField?.token}`,
+  };
   const submitData = () => {
     if (!data.password && !data.cPassword) {
       toast.warning("All Field are Required");
     } else {
-      axiosInstance
-        .put(`/edit/${id}`, data)
+      axios
+        .put(`http://localhost:5555/customer/edit/${id}`, data,{
+          headers:config
+        })
         .then((res) => {
           toast.success("Password updated successfully");
         })

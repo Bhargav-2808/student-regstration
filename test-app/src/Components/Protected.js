@@ -5,9 +5,14 @@ import appContext from "../Context/context";
 const AdminProtected = ({ Component }) => {
   const { isAdmin } = useContext(appContext);
 
+
   const nav = useNavigate();
   useEffect(() => {
-    if (isAdmin === null || isAdmin === false || isAdmin === undefined) {
+    if (
+      isAdmin === null ||
+      isAdmin === false ||
+      isAdmin === undefined 
+    ) {
       nav("/");
     }
   });
@@ -20,11 +25,51 @@ const WelcomeProtected = ({ Component }) => {
 
   const nav = useNavigate();
   useEffect(() => {
-    if (isAdmin === null || isAdmin === undefined ) {
+    if (isAdmin === null || isAdmin === undefined) {
       nav("/");
     }
   });
 
   return <Component />;
 };
-export { AdminProtected, WelcomeProtected };
+const AdminUserProtected = ({ Component }) => {
+  const { isAdmin,filterUserPermission } = useContext(appContext);
+
+
+  const nav = useNavigate();
+  useEffect(() => {
+    if (
+      isAdmin === null ||
+      isAdmin === false ||
+      isAdmin === undefined ||
+      filterUserPermission?.permission === null || 
+      filterUserPermission?.permission === undefined 
+    ) {
+      nav("/");
+    }
+  });
+
+  return <Component />;
+};
+const AdminProductProtected = ({ Component }) => {
+  const { isAdmin, filterProductPermission } = useContext(appContext);
+
+
+  const nav = useNavigate();
+  useEffect(() => {
+    if (
+      isAdmin === null ||
+      isAdmin === false ||
+      isAdmin === undefined ||
+      filterProductPermission?.permission === null || 
+      filterProductPermission?.permission === undefined 
+
+    ) {
+      nav("/");
+    }
+  });
+
+  return <Component />;
+};
+
+export { AdminProtected, WelcomeProtected, AdminProductProtected,AdminUserProtected };

@@ -1,16 +1,16 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Container, Nav, Navbar, NavLink } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import appContext from "../Context/context";
 import LoginModal from "./Form/LoginModal";
 import RegisterModal from "./Form/RegisterModal";
-import profile from "../Images/profile.png";
 import "./style.css";
 import UpdateModal from "./Form/UpdateModal";
 import PasswordModal from "./Form/PasswordModal";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { IconButton } from "@mui/material";
+import DensitySmallIcon from "@mui/icons-material/DensitySmall";
+import SideBar from "./SideBar";
 
 const Header = () => {
   const {
@@ -24,6 +24,11 @@ const Header = () => {
     setPasswordShow,
     profileData,
     getProfile,
+    userProfileData,
+    openSideBar,
+    setOpenSideBar,
+    getUserProfile,
+    profile,
   } = useContext(appContext);
 
   const nav = useNavigate();
@@ -33,15 +38,24 @@ const Header = () => {
     nav("/");
     toast.success("User logged out Successfully");
   };
-
   useEffect(() => {
-    getProfile();
+    if (isAdmin === true) getUserProfile();
   }, []);
+
   return (
     <>
       <Navbar style={{ backgroundColor: "#becce9" }}>
         <Container>
           <Nav>
+            {isAdmin && (
+              <IconButton
+                onClick={() => {
+                  setOpenSideBar(true);
+                }}
+              >
+                <DensitySmallIcon />
+              </IconButton>
+            )}
             <NavLink
               className="ms-3 navs"
               onClick={() => {
@@ -62,6 +76,18 @@ const Header = () => {
                 </NavLink>
               </>
             )}
+            {isAdmin === false && (
+              <>
+                <NavLink
+                  className=" ms-3 navs"
+                  onClick={() => {
+                    nav("/welcome");
+                  }}
+                >
+                  Welcome
+                </NavLink>
+              </>
+            )}
           </Nav>
 
           <Nav className="ms-auto">
@@ -76,43 +102,52 @@ const Header = () => {
                   >
                     Login
                   </Button>
+                  <Button
+                    className="nav-btn ms-2"
+                    onClick={() => {
+                      setRegisterShow(true);
+                    }}
+                  >
+                    Register
+                  </Button>
                 </>
               )}
 
-              <Button
-                className="nav-btn ms-2"
-                onClick={() => {
-                  isAdmin === false
-                    ? setUpdateShow(true)
-                    : setRegisterShow(true);
-                }}
-              >
-                {isAdmin === false ? "Update" : "Register"}
-              </Button>
+              {isAdmin === false && (
+                <Button
+                  className="nav-btn ms-2"
+                  onClick={() => {
+                    setUpdateShow(true);
+                  }}
+                >
+                  Update
+                </Button>
+              )}
 
-              {(isAdmin === false || isAdmin === true) && (
-                <>
-                  <Button
-                    className="nav-btn"
-                    onClick={() => {
-                      setPasswordShow(true);
-                    }}
-                  >
-                    Update Password
-                  </Button>
-                  <IconButton
-                    onClick={() => {
-                      nav("/profile");
-                    }}
-                  >
-                    <AccountCircleIcon style={{ fontSize: "2rem" }} />
-                  </IconButton>
-
+              <div className="d-flex">
+                {isAdmin === true && (
+                  <>
+                    {
+                      <div
+                        className="profile"
+                        onClick={() => {
+                          nav("/profile");
+                        }}
+                      >
+                        <p>
+                          {profile.fullname.split(" ")[0][0] +
+                            profile.fullname.split(" ")[1][0]}
+                        </p>
+                      </div>
+                    }
+                  </>
+                )}
+                {(isAdmin === true || isAdmin === false) && (
                   <Button className="nav-btn ms-5" onClick={logout}>
                     Logout{" "}
                   </Button>
-                </>
-              )}
+                )}
+              </div>
             </div>
           </Nav>
         </Container>
@@ -121,6 +156,7 @@ const Header = () => {
       <RegisterModal />
       {updateShow && <UpdateModal updateKey={profileData?.id} />}
       {passwordShow && <PasswordModal id={profileData?.id} />}
+      {openSideBar && <SideBar />}
     </>
   );
 };

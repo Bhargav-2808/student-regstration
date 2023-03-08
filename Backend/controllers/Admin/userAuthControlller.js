@@ -8,18 +8,20 @@ import { userValidation } from "../../utils/validation.js";
 
 const userLoginController = async (req, res) => {
   const { email, password } = req.body;
-
+  console.log(req.body);
   if (!email || !password) {
     res.status(400).json({ error: "All Fields area required" });
   } else {
     const user = await User.findOne({ where: { email: email } });
 
+    console.log(user);
     const data = user?.dataValues;
     if (user && comparePassword(data.password, password)) {
       res.status(201).json({
         id: data.id,
         fullname: data.fname + " " + data.lname,
         email: data.email,
+        isAdmin: true,
         token: genrateToken(data.id),
       });
     } else {
@@ -29,8 +31,7 @@ const userLoginController = async (req, res) => {
 };
 
 const userRegisterController = async (req, res) => {
-  const { fname, lname, mobile, email, password, rulesData } =
-    req.body;
+  const { fname, lname, mobile, email, password, rulesData } = req.body;
 
   let message = userValidation(req.body);
   if (message.length != 0) {
@@ -38,6 +39,7 @@ const userRegisterController = async (req, res) => {
   } else {
     try {
       const userExist = await User.findOne({ where: { email } });
+      console.log(userExist);
 
       if (userExist) {
         res.status(400).json({ error: "User already exists" });
