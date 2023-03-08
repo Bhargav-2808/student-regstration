@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { Product, Variants } from "../../modals/productSchema.js";
 
 const getAllProductContorller = async (req, res) => {
@@ -15,12 +16,14 @@ const getAllProductContorller = async (req, res) => {
     size = sizeNumber;
   }
 
-  const authPemission = req.permission.filter((item) => {
+  console.log(req.permission);
+  const authPemission = req?.permission?.filter((item) => {
     return parseInt(item.dataValues.ruleId) === 2;
   });
+  console.log(authPemission);
   if (
-    authPemission[0].dataValues.permission !== false &&
-    authPemission[0].dataValues.permission !== true &&
+    authPemission[0]?.dataValues.permission !== false &&
+    authPemission[0]?.dataValues.permission !== true &&
     !req.user.dataValues.isSuperAdmin
   ) {
     res.status(401).json({ error: "Unauthorized User!" });
@@ -102,6 +105,8 @@ const addProductController = async (req, res) => {
   const { productName, category, description, defaultVariantId, variants } =
     req.body;
 
+  console.log(req.body);
+
   const authPemission = req.permission.filter((item) => {
     return parseInt(item.dataValues.ruleId) === 2;
   });
@@ -129,7 +134,7 @@ const addProductController = async (req, res) => {
             option: item.option,
             optionValue: item.optionValue,
             quantity: item.quantity,
-            variantImage: item.file,
+            variantImage: item.variantImage,
             sku: item.sku,
           });
         } catch (error) {
@@ -149,11 +154,11 @@ const addProductController = async (req, res) => {
 };
 
 const editProductContorller = async (req, res) => {
-  // console.log(req);
   let product;
   const { productName, category, description, defaultVariantId, variants } =
     req.body;
 
+  console.log(req.body, "159");
   const authPemission = req.permission.filter((item) => {
     return parseInt(item.dataValues.ruleId) === 2;
   });
@@ -183,7 +188,8 @@ const editProductContorller = async (req, res) => {
 
       if (variants.length !== 0) {
         variants?.map(async (item) => {
-          console.log(item.sku, req.params.id);
+          console.log(item.sku, req.params.id, "190");
+
           try {
             const variantExist = await Variants.findOne({
               where: {
@@ -192,13 +198,13 @@ const editProductContorller = async (req, res) => {
             });
 
             if (variantExist) {
-              console.log("called update");
+              // console.log("called update ", variantExist);
               let variant = await Variants.update(
                 {
                   option: item.option,
                   optionValue: item.optionValue,
                   quantity: item.quantity,
-                  variantImage: item.file,
+                  variantImage: item.file ?? null,
                 },
                 {
                   where: {
@@ -206,13 +212,21 @@ const editProductContorller = async (req, res) => {
                   },
                 }
               );
-            } else {
+            }
+            // else if( )
+            // {
+
+            // }
+            else {
+              // console.log(
+              //   "called create nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn"
+              // );
               let variant = await Variants.create({
                 productId: req.params.id,
                 option: item.option,
                 optionValue: item.optionValue,
                 quantity: item.quantity,
-                variantImage: item.file,
+                variantImage: item.file ?? null,
                 sku: item.sku,
               });
             }
@@ -230,7 +244,6 @@ const editProductContorller = async (req, res) => {
 };
 
 const deleteProductController = async (req, res) => {
-
   const authPemission = req?.permission.filter((item) => {
     return parseInt(item?.dataValues.ruleId) === 2;
   });

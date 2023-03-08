@@ -78,6 +78,8 @@ const getUserContorller = async (req, res) => {
 };
 
 const userProfileController = async (req, res) => {
+  console.log(req.user?.dataValues?.id,"user 81");
+  console.log(req.params.id,"params 82");
   if (req.user?.dataValues?.id !== parseInt(req.params.id)) {
     res.status(401).json({ error: "Unauthorized User!" });
   } else {

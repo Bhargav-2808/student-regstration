@@ -36,12 +36,7 @@ const Customer = user.define("customer", {
   pic: {
     type: DataTypes.STRING,
     allowNull: true,
-  },
-  isAdmin: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-    defaultValue: false,
-  },
+  }
 });
 
 Customer.sync()

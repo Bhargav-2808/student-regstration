@@ -1,9 +1,11 @@
 import axios from "axios";
-const user = JSON.parse(localStorage.getItem("userData"));
+let user;
 
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:5555/customer",
+  baseURL: "http://localhost:5555",
 });
+
+user = JSON.parse(localStorage.getItem("userData"));
 
 axiosInstance.interceptors.request.use(
   async (config) => {

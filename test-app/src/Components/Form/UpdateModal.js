@@ -105,7 +105,7 @@ const UpdateModal = ({ updateKey }) => {
       axios
         .put(`http://localhost:5555/customer/edit/${updateKey}`, formData, {
           headers: {
-            "Content-Type": "multipart/form-data",
+            "Content-Type": "applicationn/json",
             Authorization: `Bearer ${token}`,
           },
         })
@@ -121,9 +121,7 @@ const UpdateModal = ({ updateKey }) => {
     }
   };
 
-  useEffect(() => {
-    getProfile();
-  }, []);
+
 
   return (
     <>

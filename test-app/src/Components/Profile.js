@@ -5,16 +5,17 @@ import profilePic from "../Images/profilePic.png";
 import { axiosInstance } from "../services/api";
 
 const Profile = () => {
-  const { getProfile, profileData } = useContext(appContext);
-
- 
+  let pro;
+  const { getProfile, profileData, isAdmin, getUserProfile, userProfileData } =
+    useContext(appContext);
 
   useEffect(() => {
-    getProfile();
+    if (isAdmin === true) getUserProfile();
   }, []);
 
-  const imageName = profileData?.pic?.split("Images/")[1];
+  if (isAdmin === true) pro = userProfileData;
 
+  const imageName = userProfileData?.pic?.split("Images/")[1];
 
   return (
     <>
@@ -29,29 +30,16 @@ const Profile = () => {
           </div>
           <div className="mt-2 p-2">
             <p>
-              <b>Name:</b> {profileData.fname + " " + profileData.lname}
+              <b>Name:</b> {pro.fname + pro.lname}
             </p>
 
             <p>
               {" "}
-              <b>Email :</b> {profileData.email}
+              <b>Email :</b> {pro.email}
             </p>
             <p>
               {" "}
-              <b>Mobile No :</b> {profileData.mobile}
-            </p>
-            <p>
-              {" "}
-              <b>Address Line 1 :</b> {profileData.add1}
-            </p>
-            <p>
-              {" "}
-              <b>Address Line 2 </b>:{" "}
-              {profileData.add2 ? profileData.add2 : "-"}
-            </p>
-            <p>
-              {" "}
-              <b>PinCode :</b> {profileData.pincode}
+              <b>Mobile No :</b> {pro.mobile}
             </p>
           </div>
         </div>

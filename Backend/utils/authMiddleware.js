@@ -19,6 +19,7 @@ const protect = async (req, res, next) => {
         where: { id: decode.id },
       });
 
+      console.log(decode.id,"22");
       const userExist = await User.findOne({
         where: { id: decode.id },
       });
@@ -29,19 +30,16 @@ const protect = async (req, res, next) => {
         },
         { include: [{ model: User }, { model: Rules }] }
       );
-      
-      if (customerExist) {
-        req.customer = customerExist;
-      }
-  
-      if (userExist) {
-        req.user = userExist;
-      }
+      req.customer = customerExist;
 
-      if (perExist) {
-        req.permission = perExist;
-      }
-      console.log(req.permission,"auth");
+      req.user = userExist;
+
+      req.permission = perExist;
+
+      // console.log(req.user, "user");
+      // console.log(req.customer, "customer");
+
+      // console.log(req.permission, "permission");
       next();
     } catch (error) {
       res.status(401);

@@ -13,10 +13,6 @@ const Product = user.define("product", {
     type: DataTypes.TEXT,
     allowNull: true,
   },
-  defaultVariantId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
 });
 
 const Variants = user.define("variants", {
@@ -36,7 +32,7 @@ const Variants = user.define("variants", {
   variantImage: {
     type: DataTypes.STRING,
     allowNull: true,
-  },
+  }
 });
 
 Product.hasMany(Variants);

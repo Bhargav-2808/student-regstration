@@ -1,13 +1,24 @@
 import React, { useContext, useState } from "react";
-import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
+import { Col, Container, Form, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import appContext from "../../Context/context";
 import { axiosInstance } from "../../services/api";
 import CommonModal from "../Modal/CommonModal";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import axios from "axios";
 
 const LoginModal = () => {
-  const { loginShow, setLoginShow, setIsAdmin } = useContext(appContext);
+  let result;
+  const { loginShow, setLoginShow, setIsAdmin,getUserProfile,getProfile } = useContext(appContext);
+  const [alignment, setAlignment] = useState("admin");
+  const adminField = JSON.parse(localStorage.getItem("userData"));
+
+
+  const handleToggel = (event, newAlignment) => {
+    setAlignment(newAlignment);
+  };
 
   const nav = useNavigate();
 
@@ -25,34 +36,48 @@ const LoginModal = () => {
     });
   };
 
+  const config = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${adminField?.token}`,
+  };
   const submitData = async () => {
     if (!data.password && !data.email) {
       toast.warning("All Field are Required");
     } else if (!isValidEmail(data.email)) {
       toast.warning("Enter Valid Email");
     } else {
-      const result = await axiosInstance
-        .post("/login", data)
-        .then()
-        .catch((e) => {
-          toast.error(e.message);
-        });
-      setLoginShow(false);
-
-      if (result) {
-        if (result?.data?.isAdmin) {
-          console.log("called");
+      if (alignment === "admin") {
+        result = await axios
+          .post("http://localhost:5555/user/login", data)
+          .then()
+          .catch((e) => {
+            toast.error(e.message);
+          });
+        setLoginShow(false);
+        getUserProfile();
+        if (result) {
           toast.success("Admin Logged In Successfully");
-          localStorage.setItem("userData", JSON.stringify(result.data));
-          setIsAdmin(true);
-          nav("/admin");
-        } else {
-          toast.success("User Logged In Successfully");
-          localStorage.setItem("userData", JSON.stringify(result.data));
-
-          setIsAdmin(false);
-          nav("/welcome");
         }
+        localStorage.setItem("userData", JSON.stringify(result.data));
+        setIsAdmin(true);
+        nav("/admin");
+      } else {
+        result = await axios
+          .post("http://localhost:5555/customer/login", data)
+          .then()
+          .catch((e) => {
+            toast.error(e.message);
+          });
+          getProfile();
+        setLoginShow(false);
+        if (result) {
+          toast.success("Customer Logged In Successfully");
+        }
+
+        localStorage.setItem("userData", JSON.stringify(result.data));
+
+        setIsAdmin(false);
+        nav("/welcome");
       }
     }
   };
@@ -76,6 +101,16 @@ const LoginModal = () => {
         headerTital="Login"
       >
         <Container>
+          <ToggleButtonGroup
+            color="primary"
+            value={alignment}
+            exclusive
+            onChange={handleToggel}
+            aria-label="Platform"
+          >
+            <ToggleButton value="customer">Customer</ToggleButton>
+            <ToggleButton value="admin">Admin</ToggleButton>
+          </ToggleButtonGroup>
           <Form onSubmit={(e) => e.preventDefault()}>
             <Row>
               <Col>
