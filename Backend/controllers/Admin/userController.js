@@ -1,3 +1,4 @@
+import { Op } from "sequelize";
 import { Permission, Rules, User } from "../../modals/userSchema.js";
 import { userValidation } from "../../utils/validation.js";
 
@@ -27,6 +28,8 @@ const getUserContorller = async (req, res) => {
     res.status(401).json({ error: "Unauthorized User!" });
   } else {
     try {
+      const countData = await User.findAll({});
+      console.log(countData.length);
       if (query) {
         data = await User.findAndCountAll({
           where: {
@@ -58,17 +61,21 @@ const getUserContorller = async (req, res) => {
           },
           limit: size,
           offset: page * size,
+          include: Permission,
         });
       } else {
         data = await User.findAndCountAll({
           limit: size,
           offset: page * size,
+          include: Permission,
         });
       }
+      console.log(data);
 
       res.status(201).json({
         data,
         totalPage: Math.ceil(data.count / size),
+        count: countData.length,
       });
     } catch (error) {
       console.log(error);
@@ -78,8 +85,8 @@ const getUserContorller = async (req, res) => {
 };
 
 const userProfileController = async (req, res) => {
-  console.log(req.user?.dataValues?.id,"user 81");
-  console.log(req.params.id,"params 82");
+  console.log(req.user?.dataValues?.id, "user 81");
+  console.log(req.params.id, "params 82");
   if (req.user?.dataValues?.id !== parseInt(req.params.id)) {
     res.status(401).json({ error: "Unauthorized User!" });
   } else {

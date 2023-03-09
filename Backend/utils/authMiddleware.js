@@ -11,7 +11,7 @@ const protect = async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     token = req.headers.authorization.split(" ")[1];
-    console.log(token);
+    // console.log(token);
     try {
       const decode = jwt.verify(token, process.env.SECRET_KEY);
 
@@ -19,7 +19,7 @@ const protect = async (req, res, next) => {
         where: { id: decode.id },
       });
 
-      console.log(decode.id,"22");
+      // console.log(decode.id,"22");
       const userExist = await User.findOne({
         where: { id: decode.id },
       });

@@ -13,7 +13,7 @@ const UpdateModal = ({ updateKey }) => {
     userData,
     setUserData,
     setUpdateShow,
-    getUserData,
+    getCustomerData,
     updateShow,
     profileData,
 
@@ -116,7 +116,7 @@ const UpdateModal = ({ updateKey }) => {
           toast.error(e.response.data);
         });
       getProfile();
-      getUserData();
+      getCustomerData();
       setUpdateShow(false);
     }
   };

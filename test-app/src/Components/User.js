@@ -4,7 +4,6 @@ import { Button, Col, Container, Row, Table } from "react-bootstrap";
 import { confirmAlert } from "react-confirm-alert";
 import { toast } from "react-toastify";
 import appContext from "../Context/context";
-import { axiosInstance } from "../services/api";
 import UpdateModal from "./Form/UpdateModal";
 import Loader from "./Loader";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -18,7 +17,7 @@ const User = () => {
     setUpdateShow,
     updateShow,
     loading,
-    getUserData,
+    getCustomerData,
     count,
     setRegisterShow,
     totalPage,
@@ -26,6 +25,8 @@ const User = () => {
     openDrawer,
     setOpenDrawer,
     filterUserPermission,
+    getUserData,
+    adminData,
   } = useContext(appContext);
   const [updateKey, setUpdateKey] = useState("");
   const [filterText, setFilterText] = useState("");
@@ -47,7 +48,6 @@ const User = () => {
   };
 
   const updateData = (key) => {
-    // console.log(key);
     setUpdateKey(key);
     setUpdateShow(true);
   };
@@ -55,19 +55,6 @@ const User = () => {
   const onFilterTextChange = (query) => {
     setFilterText(query);
   };
-
-  // const debounce = (fn) => {
-  //   let timerId;
-  //   return function (...args) {
-  //     console.log(args);
-  //     const context = this;
-  //     if (timerId) clearInterval(timerId);
-
-  //     timerId = setTimeout(() => {
-  //       fn.apply(context, args);
-  //     }, 2000);
-  //   };
-  // };
 
   useEffect(() => {
     getUserData(page, size);
@@ -85,7 +72,7 @@ const User = () => {
 
   const pageNum = () => {
     const rows = [];
-    for (let i = 0; i < Math.ceil(totalPage); i++) {
+    for (let i = 0; i < totalPage; i++) {
       rows.push(
         <Button
           key={i}
@@ -101,7 +88,6 @@ const User = () => {
     }
     return rows;
   };
-
   return (
     <>
       <Container className="mt-5">
@@ -118,7 +104,7 @@ const User = () => {
             />
           </Col>
           <Col className="d-flex justify-content-end me-4 mt-3">
-            {filterUserPermission?.permisssion === true && (
+            {filterUserPermission?.permission === true && (
               <Button
                 className="nav-btn "
                 onClick={() => {
@@ -179,10 +165,7 @@ const User = () => {
                   <th>Last Name</th>
                   <th>Email</th>
                   <th>Mobile No</th>
-                  <th>Add1</th>
-                  <th>Add2</th>
-                  <th>Pincode</th>
-                  {filterUserPermission?.permisssion === true && (
+                  {filterUserPermission?.permission === true && (
                     <>
                       {" "}
                       <th>Delete</th>
@@ -192,24 +175,18 @@ const User = () => {
                 </tr>
               </thead>
               <tbody>
-                {userData?.map((item, index) => (
+                {adminData?.map((item, index) => (
                   <tr key={index}>
                     <td>{index + 1}</td>
                     <td>{item.fname}</td>
                     <td>{item.lname}</td>
                     <td>{item.email}</td>
                     <td>{item.mobile}</td>
-                    <td>{item.add1}</td>
-                    <td>{item.add2}</td>
-                    <td>{item.pincode}</td>
-                    {filterUserPermission?.permisssion === true && (
+                    {filterUserPermission?.permission === true && (
                       <>
                         <td>
                           <IconButton
                             style={{ backgroundColor: "white" }}
-                            disabled={
-                              item.email === "admin@gmail.com" ? true : false
-                            }
                             onClick={() => {
                               confirmAlert({
                                 customUI: ({ onClose }) => {
@@ -261,7 +238,7 @@ const User = () => {
                   </tr>
                 ))}
               </tbody>
-              {updateShow && <UpdateModal updateKey={updateKey} />}
+              {/* {updateShow && <UpdateModal updateKey={updateKey} />} */}
               {openDrawer && (
                 <SideDrawer>
                   <UserForm />

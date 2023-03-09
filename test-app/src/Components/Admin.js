@@ -25,7 +25,7 @@ const Admin = () => {
     setUpdateShow,
     updateShow,
     loading,
-    getUserData,
+    getCustomerData,
     count,
     setRegisterShow,
     totalPage,
@@ -54,7 +54,7 @@ const Admin = () => {
         toast.error(e.response.data.error);
       });
 
-    getUserData();
+    getCustomerData();
   };
 
   const updateData = (key) => {
@@ -81,12 +81,12 @@ const Admin = () => {
   // };
 
   useEffect(() => {
-    getUserData(page, size);
+    getCustomerData(page, size);
   }, [page, size]);
 
   useEffect(() => {
     let timerId = setTimeout(() => {
-      getUserData(page, size, filterText);
+      getCustomerData(page, size, filterText);
     }, 700);
 
     return () => {
