@@ -8,7 +8,7 @@ import { axiosInstance } from "../../services/api";
 import CommonModal from "../Modal/CommonModal";
 
 const PasswordModal = ({ id }) => {
-  const { setIsAdmin, getUserData, passwordShow, setPasswordShow } =
+  const { setIsAdmin, getCustomerData, passwordShow, setPasswordShow } =
     useContext(appContext);
   const adminField = JSON.parse(localStorage.getItem("userData"));
 
@@ -46,7 +46,7 @@ const PasswordModal = ({ id }) => {
           toast.error(e.message);
         });
       setPasswordShow(false);
-      getUserData();
+      getCustomerData();
     }
   };
 

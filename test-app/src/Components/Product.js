@@ -114,7 +114,6 @@ const Product = () => {
     }
     return rows;
   };
-
   return (
     <>
       <Container className="mt-5">
@@ -180,7 +179,7 @@ const Product = () => {
                   <th>Product Name</th>
                   <th>Category</th>
                   <th>Description</th>
-                  {filterProductPermission?.permisssion === true && (
+                  {filterProductPermission?.permission === true && (
                     <>
                       <th>Delete</th>
                       <th>Update</th>
@@ -195,7 +194,7 @@ const Product = () => {
                     <td>{item.productName}</td>
                     <td>{item.category}</td>
                     <td>{item.description}</td>
-                    {filterProductPermission?.permisssion === true && (
+                    {filterProductPermission?.permission === true && (
                       <>
                         <td>
                           <IconButton

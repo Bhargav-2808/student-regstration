@@ -8,7 +8,7 @@ import { axiosInstance } from "../../services/api";
 import CommonModal from "../Modal/CommonModal";
 
 const RegisterModal = () => {
-  const { registerShow, setRegisterShow, userData, getUserData } =
+  const { registerShow, setRegisterShow, userData, getCustomerData } =
     useContext(appContext);
 
   const intialState = {
@@ -124,7 +124,7 @@ const RegisterModal = () => {
           // console.log(e.response.data.error);
           toast.error(e.response.data.error);
         });
-      getUserData();
+      getCustomerData();
 
       setRegisterShow(false);
     }

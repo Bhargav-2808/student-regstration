@@ -23,13 +23,14 @@ const AppState = ({ children }) => {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [intialProduct, setIntialProduct] = useState({});
   const [productUpdateKey, setProductUpdateKey] = useState(null);
+  const [adminData, setAdminData] = useState([]);
 
   const config = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${adminField?.token}`,
   };
 
-  const getUserData = async (page = 0, size = 3, search = "") => {
+  const getCustomerData = async (page = 0, size = 3, search = "") => {
     const data = await axios.get(
       `http://localhost:5555/customer?page=${page}&size=${size}&search=${search}`,
       {
@@ -42,6 +43,7 @@ const AppState = ({ children }) => {
     setTotalPage(data.data.totalPage);
     setLoading(false);
   };
+
   const getProductData = async (page = 0, size = 3, search = "") => {
     const data = await axios.get(
       `http://localhost:5555/product?page=${page}&size=${size}&search=${search}`,
@@ -51,8 +53,8 @@ const AppState = ({ children }) => {
     );
     const allData = data?.data.data.rows;
     setProductData(allData);
-    setCount(data?.data?.data?.rows?.length);
-    setTotalPage(Math.ceil(data?.data?.data?.rows?.length / size));
+    setCount(data?.data?.data?.count);
+    setTotalPage(Math.ceil(data?.data?.data?.count / size));
     setLoading(false);
   };
 
@@ -98,9 +100,23 @@ const AppState = ({ children }) => {
       return item.ruleId === 2;
     }
   )[0];
-  // useEffect(() => {
-  //   getProductData();
-  // }, []);
+
+  const getUserData = async (page = 0, size = 3, search = "") => {
+    const data = await axios.get(
+      `http://localhost:5555/user?page=${page}&size=${size}&search=${search}`,
+      {
+        headers: config,
+      }
+    );
+    const allData = data?.data.data.rows;
+
+    setAdminData(allData);
+    setCount(data?.data?.count);
+
+    setTotalPage(Math.ceil(data?.data?.count / size));
+    setLoading(false);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -116,7 +132,7 @@ const AppState = ({ children }) => {
         setPasswordShow,
         setUpdateShow,
         updateKey,
-        getUserData,
+        getCustomerData,
         setUpdateKey,
         isAdmin,
         setIsAdmin,
@@ -134,10 +150,13 @@ const AppState = ({ children }) => {
         profile,
         getProductData,
         productData,
-        productUpdateKey, setProductUpdateKey,
+        productUpdateKey,
+        setProductUpdateKey,
         filterUserPermission,
         filterProductPermission,
         intialProduct,
+        getUserData,
+        adminData,
       }}
     >
       {children}

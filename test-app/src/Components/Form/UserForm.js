@@ -1,21 +1,37 @@
 import React, { useState } from "react";
-import { Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 
 const UserForm = () => {
-  const intialState = {
+  const initialState = {
     fname: "",
     lname: "",
     email: "",
     mobile: "",
+    rulesData: [
+      {
+        rule: "users",
+        permit: null,
+      },
+      {
+        rule: "products",
+        permit: null,
+      },
+    ],
     password: "",
-    rulesData: [],
   };
 
-  const [check, setCheck] = useState({});
+  const [data, setData] = useState(initialState);
+  // const [permit, setPermit] = useState({
+  //   products: {
+  //     read: false,
+  //     write: false,
+  //   },
+  //   users: {
+  //     read: false,
+  //     write: false,
+  //   },
+  // });
 
-  const [data, setData] = useState(intialState);
-
-  const formData = new FormData();
   const handleChange = (e) => {
     let value =
       e.target.name === "email" ? e.target.value.toLowerCase() : e.target.value;
@@ -41,12 +57,88 @@ const UserForm = () => {
     }
   };
 
-  console.log(data);
+  // else if (type === "checkbox") {
+  // const obj = {
+  //   rule: key,
+  //   permit: e.target.value,
+  // };
 
+  // if (checked) {
+  //   if (value === "true") {
+  //     setPermit((per) => {
+  //       return {
+  //         ...per,
+  //         [key]: { read: true, write: true },
+  //       };
+  //     });
+
+  //     const index = initialState.rulesData.findIndex(
+  //       (item) => item.rule === key
+  //     );
+  //     const newState = [...initialState.rulesData];
+  //     newState[index].permit = true;
+  //     setData((per) => {
+  //       return {
+  //         ...per,
+  //         rulesData: newState,
+  //       };
+  //     });
+  //   } else {
+  //     setPermit((per) => {
+  //       return {
+  //         ...per,
+  //         [key]: { read: true, write: false },
+  //       };
+  //     });
+
+  //     const index = initialState.rulesData.findIndex(
+  //       (item) => item.rule === key
+  //     );
+  //     const newState = [...initialState.rulesData];
+  //     newState[index].permit = false;
+  //     setData((per) => {
+  //       return {
+  //         ...per,
+  //         rulesData: newState,
+  //       };
+  //     });
+  //   }
+  // } else {
+  //   setPermit((per) => {
+  //     return {
+  //       ...per,
+  //       [key]: {
+  //         read: false,
+  //         write: false,
+  //       },
+  //     };
+  //   });
+
+  //   const index = initialState.rulesData.findIndex(
+  //     (item) => item.rule === key
+  //   );
+  //   const newState = [...initialState.rulesData];
+  //   newState[index].permit = false;
+  //   setData((per) => {
+  //     return {
+  //       ...per,
+  //       rulesData: newState,
+  //     };
+  //   });
+  // }
+
+  const submitData = (e) => {
+    console.log(data);
+    e.preventDefault();
+  };
+
+  const handleOnChange = (value, i, field) => {
+    console.log(value, i, field);
+  };
   return (
     <>
       <Container>
-        <form onSubmit={(e) => e.preventDefault()} action="/" method="post">
+        <form onSubmit={submitData} action="/" method="post">
           <Row>
             <Col>
               <Form.Group className="mb-3">
@@ -117,35 +209,43 @@ const UserForm = () => {
               </Form.Group>
             </Col>
           </Row>
-
           <Row>
             <Col>
-              <Form.Check
-                name="box"
-                type="checkbox"
-                label="Read User"
-                value="users"
-              />
-              <Form.Check
-                name="box"
-                type="checkbox"
-                label="Write User"
-                value="users"
-              />
-              <Form.Check
-                name="box"
-                type="checkbox"
-                label="Read product"
-                value="products"
-              />
-              <Form.Check
-                name="box"
-                type="checkbox"
-                label="Write product"
-                value="products"
-              />
+              
+            </Col>
+            <Col>
+            
             </Col>
           </Row>
+
+          {/* <Row>
+            <Col>
+              {data?.rulesData?.map((item, i) => (
+                <>
+                  <div key={i}>
+                    <Form.Label>{item?.rule}</Form.Label>
+                    <Form.Check
+                      name={item.rule}
+                      type="checkbox"
+                      label={"Read"}
+                      value={false}
+                      onChange={handleChange}
+                      checked={permit[item.rule].read}
+                    />
+                    <Form.Check
+                      name={item.rule}
+                      type="checkbox"
+                      label={"Write"}
+                      value={true}
+                      onChange={handleChange}
+                      checked={permit[item.rule].write}
+                    />
+                  </div>
+                </>
+              ))}
+            </Col>
+          </Row> */}
+          <Button type="submit">Submit</Button>
         </form>
       </Container>
     </>
