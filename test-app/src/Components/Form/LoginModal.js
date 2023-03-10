@@ -54,11 +54,12 @@ const LoginModal = () => {
             toast.error(e.message);
           });
         setLoginShow(false);
-        getUserProfile();
         if (result) {
           toast.success("Admin Logged In Successfully");
         }
         localStorage.setItem("userData", JSON.stringify(result.data));
+        getUserProfile();
+
         setIsAdmin(true);
         nav("/admin");
       } else {
@@ -68,13 +69,14 @@ const LoginModal = () => {
           .catch((e) => {
             toast.error(e.message);
           });
-          getProfile();
+      
         setLoginShow(false);
         if (result) {
           toast.success("Customer Logged In Successfully");
         }
 
         localStorage.setItem("userData", JSON.stringify(result.data));
+        getProfile();
 
         setIsAdmin(false);
         nav("/welcome");

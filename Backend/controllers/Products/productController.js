@@ -85,7 +85,6 @@ const getProductController = async (req, res) => {
   const authPemission = req.permission.filter((item) => {
     return parseInt(item.dataValues.ruleId) === 2;
   });
-
   if (
     authPemission[0].dataValues.permission !== false &&
     authPemission[0].dataValues.permission !== true &&

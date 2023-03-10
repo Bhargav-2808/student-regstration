@@ -121,8 +121,6 @@ const UpdateModal = ({ updateKey }) => {
     }
   };
 
-
-
   return (
     <>
       <CommonModal
