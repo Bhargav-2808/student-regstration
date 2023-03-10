@@ -30,7 +30,7 @@ const AppState = ({ children }) => {
     Authorization: `Bearer ${adminField?.token}`,
   };
 
-  const getCustomerData = async (page = 0, size = 3, search = "") => {
+  const getCustomerData = async (page = 0, size = 10, search = "") => {
     const data = await axios.get(
       `http://localhost:5555/customer?page=${page}&size=${size}&search=${search}`,
       {
@@ -58,17 +58,7 @@ const AppState = ({ children }) => {
     setLoading(false);
   };
 
-  // const getProduct = async (updateKey) => {
-
-  //   const data = await axios.get(
-  //     `http://localhost:5555/product/product/${updateKey}`,
-  //     {
-  //       headers: config,
-  //     }
-  //   );
-
-  //   setIntialProduct(data.data);
-  // };
+  
   const getProfile = async () => {
     const data = await axios.get(
       `http://localhost:5555/customer/profile/${profile.id}`,
@@ -91,11 +81,11 @@ const AppState = ({ children }) => {
     setUserProfileData(data?.data);
   };
 
-  const filterUserPermission = userProfileData?.permissions?.filter((item) => {
+  const filterUserPermission = userProfileData?.ruleData?.filter((item) => {
     return item.ruleId === 1;
   })[0];
 
-  const filterProductPermission = userProfileData?.permissions?.filter(
+  const filterProductPermission = userProfileData?.ruleData?.filter(
     (item) => {
       return item.ruleId === 2;
     }

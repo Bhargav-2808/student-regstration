@@ -19,7 +19,8 @@ const ProductUpdate = ({ updateKey }) => {
   )[0];
 
   const [data, setData] = useState(filterData);
-  // console.log(data);
+    
+  
 
   const config = {
     "Content-Type": "application/json",

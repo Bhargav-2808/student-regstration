@@ -31,17 +31,6 @@ export default function SideBar() {
   React.useEffect(() => {
     getUserProfile();
   }, []);
-
-  // const filterUserPermission = userProfileData?.permissions?.filter((item) => {
-  //   return item.ruleId === 1;
-  // })[0];
-
-  // const filterProductPermission = userProfileData?.permissions?.filter(
-  //   (item) => {
-  //     return item.ruleId === 2;
-  //   }
-  // )[0];
-  console.log(filterProductPermission?.permission);
   return (
     <>
       <Drawer open={openSideBar} onClose={toggleDrawer(false)}>

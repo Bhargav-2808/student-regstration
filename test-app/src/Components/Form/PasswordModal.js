@@ -26,7 +26,7 @@ const PasswordModal = ({ id }) => {
       [e.target.name]: e.target.value,
     });
   };
-  console.log(id);
+  
   const config = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${adminField?.token}`,

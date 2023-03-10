@@ -6,7 +6,7 @@ import appContext from "../../Context/context";
 
 const ProductForm = () => {
   const user = JSON.parse(localStorage.getItem("userData"));
-  const { setOpenDrawer,getProductData } = React.useContext(appContext);
+  const { setOpenDrawer, getProductData } = React.useContext(appContext);
 
   const initialVariantState = {
     variantImage: "",
@@ -91,7 +91,7 @@ const ProductForm = () => {
           // console.log(e.response.data.error);
           toast.error(e);
         });
-        getProductData();
+      getProductData();
       setOpenDrawer(false);
     }
   };

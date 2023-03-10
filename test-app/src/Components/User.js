@@ -10,6 +10,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import SideDrawer from "./SideDrawer";
 import UserForm from "./Form/UserForm";
 import axios from "axios";
+import UpdateUser from "./Form/UpdateUser";
 
 const User = () => {
   const {
@@ -27,16 +28,25 @@ const User = () => {
     filterUserPermission,
     getUserData,
     adminData,
+    productUpdateKey,
+    setProductUpdateKey,
   } = useContext(appContext);
   const [updateKey, setUpdateKey] = useState("");
   const [filterText, setFilterText] = useState("");
   const [size, setSize] = useState(4);
-  // const [] = useState({});
+  const user = JSON.parse(localStorage.getItem("userData"));
+  
   const [page, setPage] = useState(0);
 
+  const config = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${user?.token}`,
+  };
   const deleteData = async (id) => {
     await axios
-      .delete(`http://localhost:5555/customer/delete/${id}`)
+      .delete(`http://localhost:5555/user/delete/${id}`,{
+        headers: config,
+      })
       .then((res) => {
         toast.success(res.data.sucess);
       })
@@ -49,7 +59,9 @@ const User = () => {
 
   const updateData = (key) => {
     setUpdateKey(key);
-    setUpdateShow(true);
+    setProductUpdateKey(key);
+
+    setOpenDrawer(true);
   };
 
   const onFilterTextChange = (query) => {
@@ -238,12 +250,17 @@ const User = () => {
                   </tr>
                 ))}
               </tbody>
-              {/* {updateShow && <UpdateModal updateKey={updateKey} />} */}
-              {openDrawer && (
+              
+              {openDrawer && productUpdateKey !== null ? (
+                <SideDrawer>
+                  <UpdateUser updateKey={updateKey} />
+                </SideDrawer>
+              ) : (
                 <SideDrawer>
                   <UserForm />
                 </SideDrawer>
               )}
+     
             </Table>
           </>
         ) : (

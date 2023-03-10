@@ -1,44 +1,63 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import appContext from "../../Context/context";
 
-const UserForm = () => {
+const UpdateUser = () => {
   const user = JSON.parse(localStorage.getItem("userData"));
 
-  const { setOpenDrawer, getUserData } = React.useContext(appContext);
+  const {
+    setOpenDrawer,
+    getUserData,
+    productUpdateKey,
+    setProductUpdateKey,
+    adminData,
+  } = React.useContext(appContext);
+
+  const filterData = adminData.filter((item) => {
+    return item.id === productUpdateKey;
+  })[0];
+
+  console.log(filterData);
+  const filterUserRule = filterData?.permissions?.filter((item) => {
+    return parseInt(item.ruleId) === 1;
+  })[0];
+
+  const filterProductRule = filterData?.permissions?.filter((item) => {
+    return parseInt(item.ruleId) === 2;
+  })[0];
 
   const initialState = {
-    fname: "",
-    lname: "",
-    email: "",
-    mobile: "",
+    fname: filterData.fname,
+    lname: filterData.lname,
+    email: filterData.email,
+    mobile: filterData.mobile,
     rulesData: [
       {
         rule: "users",
-        permit: null,
+        permit:
+          filterUserRule.permission === null
+            ? null
+            : filterUserRule.permission === true
+            ? true
+            : false,
       },
       {
         rule: "products",
-        permit: null,
+        permit:
+          filterProductRule.permission === null
+            ? null
+            : filterProductRule.permission === true
+            ? true
+            : false,
       },
     ],
-    password: "",
   };
 
   const [data, setData] = useState(initialState);
-  // const [permit, setPermit] = useState({
-  //   products: {
-  //     read: false,
-  //     write: false,
-  //   },
-  //   users: {
-  //     read: false,
-  //     write: false,
-  //   },
-  // });
 
+  console.log(data, "data");
   const handleChange = (e) => {
     let value =
       e.target.name === "email" ? e.target.value.toLowerCase() : e.target.value;
@@ -78,75 +97,6 @@ const UserForm = () => {
     }
   };
 
-  // else if (type === "checkbox") {
-  // const obj = {
-  //   rule: key,
-  //   permit: e.target.value,
-  // };
-
-  // if (checked) {
-  //   if (value === "true") {
-  //     setPermit((per) => {
-  //       return {
-  //         ...per,
-  //         [key]: { read: true, write: true },
-  //       };
-  //     });
-
-  //     const index = initialState.rulesData.findIndex(
-  //       (item) => item.rule === key
-  //     );
-  //     const newState = [...initialState.rulesData];
-  //     newState[index].permit = true;
-  //     setData((per) => {
-  //       return {
-  //         ...per,
-  //         rulesData: newState,
-  //       };
-  //     });
-  //   } else {
-  //     setPermit((per) => {
-  //       return {
-  //         ...per,
-  //         [key]: { read: true, write: false },
-  //       };
-  //     });
-
-  //     const index = initialState.rulesData.findIndex(
-  //       (item) => item.rule === key
-  //     );
-  //     const newState = [...initialState.rulesData];
-  //     newState[index].permit = false;
-  //     setData((per) => {
-  //       return {
-  //         ...per,
-  //         rulesData: newState,
-  //       };
-  //     });
-  //   }
-  // } else {
-  //   setPermit((per) => {
-  //     return {
-  //       ...per,
-  //       [key]: {
-  //         read: false,
-  //         write: false,
-  //       },
-  //     };
-  //   });
-
-  //   const index = initialState.rulesData.findIndex(
-  //     (item) => item.rule === key
-  //   );
-  //   const newState = [...initialState.rulesData];
-  //   newState[index].permit = false;
-  //   setData((per) => {
-  //     return {
-  //       ...per,
-  //       rulesData: newState,
-  //     };
-  //   });
-  // }
   const isValidEmail = (email) => {
     const re =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -154,7 +104,6 @@ const UserForm = () => {
       return true;
     }
   };
-
   const isValidPwd = (password) => {
     const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\w!@#$%^&*?~()-]{8,}$/;
     if (re.test(password)) {
@@ -163,6 +112,7 @@ const UserForm = () => {
   };
   const submitData = async (e) => {
     e.preventDefault();
+    console.log("caall");
 
     if (
       data.fname === "" ||
@@ -175,11 +125,9 @@ const UserForm = () => {
       toast.warning("Enter Valid Mobile");
     } else if (!isValidEmail(data.email)) {
       toast.warning("Enter Valid Email");
-    } else if (!isValidPwd(data.password)) {
-      toast.warning("Password should be in Valid Formate..");
     } else {
       await axios
-        .post(`http://localhost:5555/user/register`, data, {
+        .put(`http://localhost:5555/user/edit/${productUpdateKey}`, data, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${user?.token}`,
@@ -189,7 +137,6 @@ const UserForm = () => {
           toast.success("Product added successfully");
         })
         .catch((e) => {
-          // console.log(e.response.data.error);
           toast.error(e);
         });
 
@@ -199,13 +146,10 @@ const UserForm = () => {
     }
   };
 
-  // const handleOnChange = (value, i, field) => {
-  //   console.log(value, i, field);
-  // };
   return (
     <>
       <Container>
-        <form onSubmit={submitData} action="/" method="post">
+        <form onSubmit={submitData}>
           <Row>
             <Col>
               <Form.Group className="mb-3">
@@ -216,6 +160,7 @@ const UserForm = () => {
                   name="fname"
                   onChange={handleChange}
                   value={data.fname}
+                  placeholder="DDD"
                 />
               </Form.Group>
             </Col>
@@ -227,7 +172,7 @@ const UserForm = () => {
                   type="text"
                   name="lname"
                   onChange={handleChange}
-                  value={data.lname}
+                  value={data?.lname}
                 />
               </Form.Group>
             </Col>
@@ -253,24 +198,8 @@ const UserForm = () => {
                 <Form.Control
                   type="number"
                   className="fcontrol"
-                  value={data.mobile}
+                  value={data?.mobile}
                   name="mobile"
-                  onChange={handleChange}
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-
-          <Row>
-            <Col lg={6}>
-              <Form.Group className="mb-3">
-                {" "}
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  className="fcontrol"
-                  name="password"
-                  value={data.password}
                   onChange={handleChange}
                 />
               </Form.Group>
@@ -283,12 +212,10 @@ const UserForm = () => {
                 <Form.Select
                   onChange={handleChange}
                   className="fcontrol"
-                  value={data?.rulesData?.permit}
+                  value={data?.rulesData[0]?.permit}
                   name="users"
                 >
-                  <option value={null} selected>
-                    No Permission
-                  </option>
+                  <option value={null}>No Permission</option>
                   <option value={false}>Read</option>
                   <option value={true}>Write</option>
                 </Form.Select>
@@ -296,50 +223,22 @@ const UserForm = () => {
             </Col>
             <Col>
               <Form.Group className="mb-3">
+                {data?.rulesData?.permit}
                 <Form.Label>Products Permission</Form.Label>{" "}
                 <Form.Select
                   onChange={handleChange}
                   className="fcontrol"
-                  value={data?.rulesData?.permit}
+                  value={data?.rulesData[1]?.permit}
                   name="products"
                 >
-                  <option value={null} selected>
-                    No Permission
-                  </option>
-                  <option value={false}>Read</option>
-                  <option value={true}>Write</option>
+                  <option value={null} >No Permission</option>
+                  <option value={false} >Read</option>
+                  <option value={true} >Write</option>
                 </Form.Select>
               </Form.Group>
             </Col>
           </Row>
 
-          {/* <Row>
-            <Col>
-              {data?.rulesData?.map((item, i) => (
-                <>
-                  <div key={i}>
-                    <Form.Label>{item?.rule}</Form.Label>
-                    <Form.Check
-                      name={item.rule}
-                      type="checkbox"
-                      label={"Read"}
-                      value={false}
-                      onChange={handleChange}
-                      checked={permit[item.rule].read}
-                    />
-                    <Form.Check
-                      name={item.rule}
-                      type="checkbox"
-                      label={"Write"}
-                      value={true}
-                      onChange={handleChange}
-                      checked={permit[item.rule].write}
-                    />
-                  </div>
-                </>
-              ))}
-            </Col>
-          </Row> */}
           <Button type="submit" className="nav-btn">Submit</Button>
         </form>
       </Container>
@@ -347,4 +246,4 @@ const UserForm = () => {
   );
 };
 
-export default UserForm;
+export default UpdateUser;

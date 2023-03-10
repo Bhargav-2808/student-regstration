@@ -23,10 +23,11 @@ const Header = () => {
     passwordShow,
     setPasswordShow,
     profileData,
-    getProfile,
+   
     userProfileData,
     openSideBar,
     setOpenSideBar,
+    getCustomerData,
     getUserProfile,
     profile,
   } = useContext(appContext);
@@ -39,7 +40,15 @@ const Header = () => {
     toast.success("User logged out Successfully");
   };
   useEffect(() => {
-    if (isAdmin === true) getUserProfile();
+    if (isAdmin === true) 
+    {
+      getUserProfile()
+    }
+    
+    if(updateShow)
+    {
+      getCustomerData();
+    };
   }, []);
 
   return (
@@ -113,18 +122,20 @@ const Header = () => {
                 </>
               )}
 
+        
+
+              <div className="d-flex">
               {isAdmin === false && (
                 <Button
                   className="nav-btn ms-2"
                   onClick={() => {
+                    getCustomerData();
                     setUpdateShow(true);
                   }}
                 >
                   Update
                 </Button>
               )}
-
-              <div className="d-flex">
                 {isAdmin === true && (
                   <>
                     {
@@ -154,7 +165,7 @@ const Header = () => {
       </Navbar>
       <LoginModal />
       <RegisterModal />
-      {updateShow && <UpdateModal updateKey={profileData?.id} />}
+      {updateShow && <UpdateModal updateKey={profileData?.id}/>}
       {passwordShow && <PasswordModal id={profileData?.id} />}
       {openSideBar && <SideBar />}
     </>

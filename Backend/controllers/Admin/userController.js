@@ -92,9 +92,18 @@ const userProfileController = async (req, res) => {
   } else {
     try {
       const data = await User.findByPk(req.params.id, { include: Permission });
+  
+      const neWobj = {
+        id:data.id,
+        fname: data.fname,
+        lanme: data.lname,
+        email: data.email,
+        mobile: data.mobile,
+        ruleData: data.permissions,
+      };
       console.log(data);
       if (data) {
-        res.status(201).json(data);
+        res.status(201).json(neWobj);
       }
     } catch (error) {
       res.status(500).json(error.message);
