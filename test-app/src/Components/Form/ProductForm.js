@@ -13,7 +13,6 @@ const ProductForm = () => {
     option: "",
     optionValue: "",
     quantity: 1,
-    sku: Date.now().toString(36) + Math.random().toString(36).substr(2),
   };
   const intialState = {
     productName: "",
@@ -23,7 +22,7 @@ const ProductForm = () => {
   };
 
   const [data, setData] = useState(intialState);
-  console.log(intialState);
+
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -70,8 +69,7 @@ const ProductForm = () => {
       data.category === "" ||
       data.variants.option === "" ||
       data.variants.optionValue === "" ||
-      data.variants.quantity === "" ||
-      data.variants.sku === ""
+      data.variants.quantity === ""
     ) {
       toast.warning("All fields are required!");
     } else if (data.variants.quantity < 1) {

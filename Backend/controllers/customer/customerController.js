@@ -85,10 +85,10 @@ const getCustomerContorller = async (req, res) => {
 };
 
 const profileContorller = async (req, res) => {
-  console.log(req?.customer,"customer 88");
+  // console.log(req?.customer,"customer 88");
 
-  console.log(req?.customer?.dataValues?.id,"customer 88");
-  console.log(req.params.id,"params 89");
+  // console.log(req?.customer?.dataValues?.id,"customer 88");
+  // console.log(req.params.id,"params 89");
   if (req?.customer?.dataValues?.id !== parseInt(req?.params?.id)) {
     console.log("called");
     res.status(401).json({ error: "Unauthorized Customer!" });
@@ -104,49 +104,8 @@ const profileContorller = async (req, res) => {
   }
 };
 
-// const editPasswordController = async (req, res) => {
-//   let user;
-//   const { password, cPassword } = req.body;
-
-//   if (!isValidPwd(password)) {
-//     res.status(401).json({ error: "password should be in valid formate" });
-//   } else if (password === cPassword) {
-//     try {
-//       if (
-//         req.user?.dataValues?.id === parseInt(req.params.id) ||
-//         req.user.dataValues.isAdmin
-//       ) {
-//         const encrypted = generatePassword(password);
-//         user = await User.update(
-//           {
-//             password: encrypted,
-//           },
-//           {
-//             where: {
-//               id: req.params.id,
-//             },
-//           }
-//         );
-
-//         if (user) {
-//           res.status(201).json({ sucess: "Password Updated Successfully" });
-//         }
-//       } else {
-//         res
-//           .status(401)
-//           .json({ error: "User can not edit diffrent user's Password" });
-//       }
-//     } catch (error) {
-//       res.status(500).json({ error: error.message });
-//     }
-//   } else {
-//     res.status(401).json({ error: "Both password should be same" });
-//   }
-// };
-
 const editCustomerContorller = async (req, res) => {
   let user, file, message;
-  // console.log(req);
   const {
     fname,
     lname,
@@ -159,6 +118,7 @@ const editCustomerContorller = async (req, res) => {
     cPassword,
   } = req.body;
 
+
   if (password && cPassword) {
     if (!isValidPwd(password)) {
       res.status(400).json({ error: "password should be in valid formate" });
@@ -168,6 +128,7 @@ const editCustomerContorller = async (req, res) => {
           req.customer?.dataValues?.id === parseInt(req.params.id) ||
           req.customer.dataValues.isAdmin
         ) {
+        
           const encrypted = generatePassword(password);
           user = await Customer.update(
             {
@@ -206,10 +167,9 @@ const editCustomerContorller = async (req, res) => {
       res.status(501).json(message);
     } else {
       try {
-        console.log(req.user.dataValues);
         if (
-          req.user?.dataValues?.id === parseInt(req.params.id) ||
-          req.user.dataValues.isAdmin
+          req.customer?.dataValues?.id === parseInt(req.params.id) ||
+          req.customer?.dataValues.isAdmin
         ) {
           user = await Customer.update(
             {

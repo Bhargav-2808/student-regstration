@@ -4,14 +4,18 @@ import { Button, Col, Container, Form, Modal, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import appContext from "../../Context/context";
-import { axiosInstance } from "../../services/api";
 import CommonModal from "../Modal/CommonModal";
 
 const PasswordModal = ({ id }) => {
-  const { setIsAdmin, getCustomerData, passwordShow, setPasswordShow } =
-    useContext(appContext);
+  const {
+    isAdmin,
+    getCustomerData,
+    passwordShow,
+    setPasswordShow,
+    getUserData,
+    userProfileData,
+  } = useContext(appContext);
   const adminField = JSON.parse(localStorage.getItem("userData"));
-
 
   const intialState = {
     password: "",
@@ -19,14 +23,19 @@ const PasswordModal = ({ id }) => {
   };
 
   const [data, setData] = useState(intialState);
-
+  const isValidPwd = (password) => {
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[\w!@#$%^&*?~()-]{8,}$/;
+    if (re.test(password)) {
+      return true;
+    }
+  };
   const handleChange = (e) => {
     setData({
       ...data,
       [e.target.name]: e.target.value,
     });
   };
-  
+
   const config = {
     "Content-Type": "application/json",
     Authorization: `Bearer ${adminField?.token}`,
@@ -34,19 +43,40 @@ const PasswordModal = ({ id }) => {
   const submitData = () => {
     if (!data.password && !data.cPassword) {
       toast.warning("All Field are Required");
+    } else if (data.password !== data.cPassword) {
+      toast.warning("Both Password should be same");
+    } else if (!isValidPwd(data.password)) {
+      toast.warning("Enter Password in valid formate ");
     } else {
-      axios
-        .put(`http://localhost:5555/customer/edit/${id}`, data,{
-          headers:config
-        })
-        .then((res) => {
-          toast.success("Password updated successfully");
-        })
-        .catch((e) => {
-          toast.error(e.message);
-        });
-      setPasswordShow(false);
-      getCustomerData();
+      if (isAdmin === true) {
+        axios
+          .put(`http://localhost:5555/user/edit/${userProfileData?.id}`, data, {
+            headers: config,
+          })
+          .then((res) => {
+            toast.success("Password updated successfully");
+          })
+          .catch((e) => {
+            toast.error(e.message);
+          });
+        setPasswordShow(false);
+        getUserData();
+      } else {
+        console.log("called1");
+
+        axios
+          .put(`http://localhost:5555/customer/edit/${id}`, data, {
+            headers: config,
+          })
+          .then((res) => {
+            toast.success("Password updated successfully");
+          })
+          .catch((e) => {
+            toast.error(e.message);
+          });
+        setPasswordShow(false);
+        getCustomerData();
+      }
     }
   };
 

@@ -11,10 +11,10 @@ import axios from "axios";
 
 const LoginModal = () => {
   let result;
-  const { loginShow, setLoginShow, setIsAdmin,getUserProfile,getProfile } = useContext(appContext);
+  const { loginShow, setLoginShow, setIsAdmin, getUserProfile, getProfile } =
+    useContext(appContext);
   const [alignment, setAlignment] = useState("admin");
   const adminField = JSON.parse(localStorage.getItem("userData"));
-
 
   const handleToggel = (event, newAlignment) => {
     setAlignment(newAlignment);
@@ -36,10 +36,6 @@ const LoginModal = () => {
     });
   };
 
-  const config = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${adminField?.token}`,
-  };
   const submitData = async () => {
     if (!data.password && !data.email) {
       toast.warning("All Field are Required");
@@ -69,7 +65,7 @@ const LoginModal = () => {
           .catch((e) => {
             toast.error(e.message);
           });
-      
+
         setLoginShow(false);
         if (result) {
           toast.success("Customer Logged In Successfully");

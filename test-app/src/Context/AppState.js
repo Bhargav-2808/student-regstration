@@ -53,12 +53,12 @@ const AppState = ({ children }) => {
     );
     const allData = data?.data.data.rows;
     setProductData(allData);
-    setCount(data?.data?.data?.count);
-    setTotalPage(Math.ceil(data?.data?.data?.count / size));
+
+    setCount(data?.data?.count);
+    setTotalPage(Math.ceil(data?.data?.count / size));
     setLoading(false);
   };
 
-  
   const getProfile = async () => {
     const data = await axios.get(
       `http://localhost:5555/customer/profile/${profile.id}`,
@@ -85,11 +85,9 @@ const AppState = ({ children }) => {
     return item.ruleId === 1;
   })[0];
 
-  const filterProductPermission = userProfileData?.ruleData?.filter(
-    (item) => {
-      return item.ruleId === 2;
-    }
-  )[0];
+  const filterProductPermission = userProfileData?.ruleData?.filter((item) => {
+    return item.ruleId === 2;
+  })[0];
 
   const getUserData = async (page = 0, size = 3, search = "") => {
     const data = await axios.get(

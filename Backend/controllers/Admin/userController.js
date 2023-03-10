@@ -1,6 +1,7 @@
 import { Op } from "sequelize";
 import { Permission, Rules, User } from "../../modals/userSchema.js";
-import { userValidation } from "../../utils/validation.js";
+import { generatePassword } from "../../utils/helper.js";
+import { isValidPwd, userValidation } from "../../utils/validation.js";
 
 const getUserContorller = async (req, res) => {
   let data;
@@ -85,18 +86,16 @@ const getUserContorller = async (req, res) => {
 };
 
 const userProfileController = async (req, res) => {
-  console.log(req.user?.dataValues?.id, "user 81");
-  console.log(req.params.id, "params 82");
   if (req.user?.dataValues?.id !== parseInt(req.params.id)) {
     res.status(401).json({ error: "Unauthorized User!" });
   } else {
     try {
       const data = await User.findByPk(req.params.id, { include: Permission });
-  
+
       const neWobj = {
-        id:data.id,
+        id: data.id,
         fname: data.fname,
-        lanme: data.lname,
+        lname: data.lname,
         email: data.email,
         mobile: data.mobile,
         ruleData: data.permissions,
@@ -113,7 +112,6 @@ const userProfileController = async (req, res) => {
 
 const editUserContorller = async (req, res) => {
   let user, message;
-  // console.log(req);
   const { fname, lname, mobile, email, password, cPassword, rulesData } =
     req.body;
 
@@ -121,14 +119,7 @@ const editUserContorller = async (req, res) => {
     return parseInt(item.dataValues.ruleId) === 2;
   });
 
-  if (
-    (!req.user.dataValues.isSuperAdmin &&
-      authPemission[0].dataValues.permission !== true) ||
-    parseInt(req.params.id) ===
-      parseInt(req.user.dataValues.id || parseInt(req.params.id) === 1)
-  ) {
-    res.status(401).json({ error: "Unauthorized User!" });
-  } else if (password && cPassword) {
+  if (password && cPassword) {
     if (!isValidPwd(password)) {
       res.status(400).json({ error: "password should be in valid formate" });
     } else if (password === cPassword) {
@@ -146,9 +137,7 @@ const editUserContorller = async (req, res) => {
             }
           );
 
-          if (user) {
-            res.status(201).json({ sucess: "Password Updated Successfully" });
-          }
+          res.status(201).json({ sucess: "Password Updated Successfully" });
         }
       } catch (error) {
         res.status(500).json({ error: error.message });
@@ -156,6 +145,13 @@ const editUserContorller = async (req, res) => {
     } else {
       res.status(400).json({ error: "Both password should be same" });
     }
+  } else if (
+    (!req.user.dataValues.isSuperAdmin &&
+      authPemission[0].dataValues.permission !== true) ||
+    parseInt(req.params.id) ===
+      parseInt(req.user.dataValues.id || parseInt(req.params.id) === 1)
+  ) {
+    res.status(401).json({ error: "Unauthorized User!" });
   } else {
     message = userValidation(req.body);
 

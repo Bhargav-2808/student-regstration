@@ -1,6 +1,7 @@
 import { Op } from "sequelize";
 import { Product, Variants } from "../../modals/productSchema.js";
 import { Permission, User } from "../../modals/userSchema.js";
+import { v4 as uuidv4 } from "uuid";
 
 const getAllProductContorller = async (req, res) => {
   let data;
@@ -57,14 +58,13 @@ const getAllProductContorller = async (req, res) => {
           },
           limit: size,
           offset: page * size,
-          count: countData,
+
           include: Variants,
         });
       } else {
         data = await Product.findAndCountAll({
           limit: size,
           offset: page * size,
-          count: countData,
 
           include: Variants,
         });
@@ -73,6 +73,7 @@ const getAllProductContorller = async (req, res) => {
       res.status(201).json({
         data,
         totalPage: Math.ceil(data.count / size),
+        count: countData.length,
       });
     } catch (error) {
       console.log(error);
@@ -140,7 +141,7 @@ const addProductController = async (req, res) => {
             optionValue: item.optionValue,
             quantity: item.quantity,
             variantImage: item.variantImage,
-            sku: item.sku,
+            sku: uuidv4(),
           });
         } catch (error) {
           res.status(500).json({ error });
@@ -209,8 +210,6 @@ const editProductContorller = async (req, res) => {
 
       if (variants.length !== 0) {
         variants?.map(async (item) => {
-          console.log(item.sku, req.params.id, "");
-
           try {
             if (item?.id) {
               let variant = await Variants.update(
@@ -233,7 +232,7 @@ const editProductContorller = async (req, res) => {
                 optionValue: item.optionValue,
                 quantity: item.quantity,
                 variantImage: item.file ?? null,
-                sku: item.sku,
+                sku: uuidv4(),
               });
             }
           } catch (error) {

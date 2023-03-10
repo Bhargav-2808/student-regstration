@@ -4,6 +4,7 @@ import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { toast } from "react-toastify";
 import appContext from "../../Context/context";
 
+
 const ProductUpdate = ({ updateKey }) => {
   const user = JSON.parse(localStorage.getItem("userData"));
 
@@ -19,8 +20,6 @@ const ProductUpdate = ({ updateKey }) => {
   )[0];
 
   const [data, setData] = useState(filterData);
-    
-  
 
   const config = {
     "Content-Type": "application/json",
@@ -31,7 +30,6 @@ const ProductUpdate = ({ updateKey }) => {
     option: "",
     optionValue: "",
     quantity: 1,
-    sku: Date.now().toString(36) + Math.random().toString(36).substr(2),
   };
   const intialState = {
     productName: "",
@@ -88,8 +86,8 @@ const ProductUpdate = ({ updateKey }) => {
       data.category === "" ||
       data.variants.option === "" ||
       data.variants.optionValue === "" ||
-      data.variants.quantity === "" ||
-      data.variants.sku === ""
+      data.variants.quantity === "" 
+     
     ) {
       toast.warning("All fields are required!");
     } else if (data.variants.quantity < 1) {

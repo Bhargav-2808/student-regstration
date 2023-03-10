@@ -19,7 +19,6 @@ const UpdateUser = () => {
     return item.id === productUpdateKey;
   })[0];
 
-  console.log(filterData);
   const filterUserRule = filterData?.permissions?.filter((item) => {
     return parseInt(item.ruleId) === 1;
   })[0];
@@ -57,7 +56,6 @@ const UpdateUser = () => {
 
   const [data, setData] = useState(initialState);
 
-  console.log(data, "data");
   const handleChange = (e) => {
     let value =
       e.target.name === "email" ? e.target.value.toLowerCase() : e.target.value;
@@ -231,15 +229,17 @@ const UpdateUser = () => {
                   value={data?.rulesData[1]?.permit}
                   name="products"
                 >
-                  <option value={null} >No Permission</option>
-                  <option value={false} >Read</option>
-                  <option value={true} >Write</option>
+                  <option value={null}>No Permission</option>
+                  <option value={false}>Read</option>
+                  <option value={true}>Write</option>
                 </Form.Select>
               </Form.Group>
             </Col>
           </Row>
 
-          <Button type="submit" className="nav-btn">Submit</Button>
+          <Button type="submit" className="nav-btn">
+            Submit
+          </Button>
         </form>
       </Container>
     </>

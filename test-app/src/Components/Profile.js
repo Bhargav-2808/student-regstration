@@ -30,7 +30,7 @@ const Profile = () => {
           </div>
           <div className="mt-2 p-2">
             <p>
-              <b>Name:</b> {pro.fname + pro.lname}
+              <b>Name:</b> {pro.fname +" "+pro.lname}
             </p>
 
             <p>

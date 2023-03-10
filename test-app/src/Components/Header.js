@@ -51,6 +51,8 @@ const Header = () => {
     };
   }, []);
 
+  console.log(profileData?.id);
+
   return (
     <>
       <Navbar style={{ backgroundColor: "#becce9" }}>
